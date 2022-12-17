@@ -12,6 +12,9 @@
 // 	}, 1000);
 // };
 
+import { globalUtils } from "./libs/globalUtils";
+import { god } from "./libs/god";
+
 // foo();
 
 // chrome.storage.local.get(["badgeText"], ({ badgeText }) => {
@@ -33,11 +36,13 @@
 
 // chrome.runtime.onMessage.addListener(
 // 	function (request, sender, sendResponse) {
+// 		console.log("接收到消息", request, sender, sendResponse);
+
 // 		console.log(sender.tab ?
 // 			"from a content script:" + sender.tab.url :
 // 			"from the extension", request);
 // 		if (request.greeting === "hello")
-// 			sendResponse({ farewell: "goodbye" });
+// 			sendResponse({ farewell: "接收到了content发来的消息" });
 // 	}
 // );
 
@@ -49,3 +54,12 @@
 // 		files: ['scripts/exec.js']
 // 	});
 // });
+
+chrome.runtime.onMessageExternal.addListener(
+	function (request, sender, sendResponse) {
+		// console.log(request, sender, sendResponse);
+		if (request.message === globalUtils.messages.RESTORED) {
+			god.pushWallet(request.data.name, request.data.address, sendResponse);
+		}
+	}
+);

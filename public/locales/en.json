@@ -1,0 +1,16 @@
+{
+	"add": "add",
+	"import": "import",
+	"createNewWallet": "Create new wallet",
+	"restoreDeployedWallet": "Restore deployed wallet",
+	"connectWallet": "connect wallet",
+	"metaMaskNotInstalled!": "MetaMask is not installed!",
+	"next": "next",
+	"name": "name",
+	"address": "address",
+	"ok": "ok",
+	"enterValidAddress": "Please enter a valid Ethereum address.",
+	"notMultiSigWallet": "The address you entered might not be a valid multi-signature wallet.",
+	"delete": "delete",
+	"connect": "connect"
+}

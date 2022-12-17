@@ -6,7 +6,9 @@
 	"web_accessible_resources": [
 		{
 			"resources": [
-				"scripts/index.js"
+				"scripts/inject.js",
+				"scripts/add.js",
+				"scripts/abis/MultiSigWalletWithDailyLimit.json"
 			],
 			"matches": [
 				"https://*/*",
@@ -14,6 +16,11 @@
 			]
 		}
 	],
+	"externally_connectable": {
+		"matches": [
+			"https://www.filda.io/*"
+		]
+	},
 	"icons": {
 		"16": "images/logo16.png",
 		"32": "images/logo32.png",
@@ -29,11 +36,15 @@
 			"24": "images/logo32.png",
 			"32": "images/logo32.png"
 		},
-		"default_title": "测试"
+		"default_title": "测试",
+		"default_popup": "pages/popup.html"
 	},
 	"permissions": [
 		"activeTab",
-		"scripting"
+		"scripting",
+		"tabs",
+		"nativeMessaging",
+		"storage"
 	],
 	"content_scripts": [
 		{
