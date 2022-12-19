@@ -12,5 +12,7 @@
 	"enterValidAddress": "Please enter a valid Ethereum address.",
 	"notMultiSigWallet": "The address you entered might not be a valid multi-signature wallet.",
 	"delete": "delete",
-	"connect": "connect"
+	"connect": "connect",
+	"addWallet": "add wallet",
+	"close": "close"
 }

@@ -26,6 +26,16 @@
 	font-size: 1.5em;
 }
 
+.fmwe_modal .buttons {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: center;
+	column-gap: 1em;
+	margin: 1em 0;
+}
+
 .fmwe_modal .h2 {
 	font-size: 1em;
 	font-family: daysOne;
@@ -39,16 +49,28 @@
 	border: 0;
 	outline: 0;
 	background-image: linear-gradient(250deg, rgba(37, 180, 255, .4), rgba(93, 91, 255, .4), rgba(199, 36, 255, .4)) !important;
-	border-top-left-radius: 1em 1.1em;
-	border-top-right-radius: 1em 1.1em;
-	border-bottom-left-radius: 1em 1.1em;
-	border-bottom-right-radius: 1em 1.1em;
+	border-radius: 1em;
 	padding: 1em 1.5em;
 	width: fit-content;
 	background-color: transparent;
 	text-transform: capitalize;
 	cursor: pointer;
 	font-family: daysOne;
+}
+
+.fmwe_small_button {
+	color: #e8ebf3;
+	border: 0;
+	outline: 0;
+	background-image: linear-gradient(250deg, rgba(37, 180, 255, .4), rgba(93, 91, 255, .4), rgba(199, 36, 255, .4)) !important;
+	border-radius: 12px;
+	padding: 0.5em 1em;
+	width: fit-content;
+	background-color: transparent;
+	text-transform: capitalize;
+	cursor: pointer;
+	font-family: daysOne;
+	font-size: 0.8em;
 }
 
 .fmwe_button .button_content {

@@ -4,7 +4,7 @@ import { web3Controller } from "../libs/web3Controller";
 import { safeController } from "../libs/safeController";
 import { jesus } from "../libs/Jesus";
 
-export const AddView = ({ web3 = null }) => {
+export const AddView = ({ onClose = null }) => {
 	const [extensionId, setExtensionId] = useState("");
 	const [step, setStep] = useState(globalUtils.AddSteps.IDLE);
 	const [account, setAccount] = useState("");
@@ -105,6 +105,8 @@ export const AddView = ({ web3 = null }) => {
 		</div>}
 
 		{step === globalUtils.AddSteps.ADD_OPTIONS && <div>
+			<div className="h2">{jesus.getLocaleString("addWallet")}</div>
+
 			{globalUtils.addTabs.map(option => {
 				return <div>
 					<input
@@ -137,5 +139,13 @@ export const AddView = ({ web3 = null }) => {
 
 			<button onClick={handleRestore}>{jesus.getLocaleString("ok")}</button>
 		</div>}
+
+		<div className="buttons">
+			<button
+				className="fmwe_small_button"
+				onClick={onClose}>
+				{jesus.getLocaleString("close")}
+			</button>
+		</div>
 	</div>
 };
