@@ -1,0 +1,60 @@
+@font-face {
+	font-family: rubik;
+	src: url("../fonts/Rubik-Regular.ttf");
+}
+
+@font-face {
+	font-family: daysOne;
+	src: url("../fonts/DaysOne-Regular.ttf");
+}
+
+.fmwe_modal {
+	width: fit-content;
+	height: fit-content;
+	background-color: #011138;
+	color: #e8ebf3;
+	box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.5);
+	border-radius: 1em;
+	padding: 1.5em;
+	/* border: 1px solid gainsboro; */
+	font-size: 16px;
+}
+
+.fmwe_modal .modalTitle {
+	font-family: daysOne;
+	text-transform: uppercase;
+	font-size: 1.5em;
+}
+
+.fmwe_modal .h2 {
+	font-size: 1em;
+	font-family: daysOne;
+	text-transform: capitalize;
+	font-weight: bolder;
+	margin: 2em 0;
+}
+
+.fmwe_button {
+	color: #e8ebf3;
+	border: 0;
+	outline: 0;
+	background-image: linear-gradient(250deg, rgba(37, 180, 255, .4), rgba(93, 91, 255, .4), rgba(199, 36, 255, .4)) !important;
+	border-top-left-radius: 1em 1.1em;
+	border-top-right-radius: 1em 1.1em;
+	border-bottom-left-radius: 1em 1.1em;
+	border-bottom-right-radius: 1em 1.1em;
+	padding: 1em 1.5em;
+	width: fit-content;
+	background-color: transparent;
+	text-transform: capitalize;
+	cursor: pointer;
+	font-family: daysOne;
+}
+
+.fmwe_button .button_content {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	column-gap: 1em;
+}

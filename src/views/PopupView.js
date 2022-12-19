@@ -27,12 +27,33 @@ export const PopupView = ({ }) => {
 		god.connectCurrentWallet(multisigWallet);
 	};
 
-	return <div>
-		<h1>{globalUtils.constants.APP_TITLE}</h1>
+	const handleDelete = event => {
+		const idx = parseInt(event.currentTarget.id);
+		god.spliceWallet(idx, newWallets => {
+			setWallets(newWallets);
+		});
+	};
 
-		{wallets.length === 0 && <Button
-			label={god.getLocaleString("add") + "/" + god.getLocaleString("import")}
-			handleClick={handleOpenCreateView} />}
+	return <div>
+		<div className="titleBar">
+			<img src="/images/logo32.png" />
+
+			<div className="accountMenu">
+				<div className="networkLabel">Elastos</div>
+
+				{currentWallet && <div className="accountLabel">
+					{globalUtils.stringShorten(currentWallet.name, 5)}
+				</div>}
+			</div>
+		</div>
+
+		{wallets.length === 0 && <div className="coverLayout">
+			<div style={{ height: "250px" }} />
+
+			<Button
+				label={god.getLocaleString("add") + "/" + god.getLocaleString("import")}
+				handleClick={handleOpenCreateView} />
+		</div>}
 
 		{!currentWallet && wallets.map((item, index) => {
 			return <div
@@ -42,7 +63,9 @@ export const PopupView = ({ }) => {
 				<div>{item.address}</div>
 
 				<div>
-					<button id={item.name}>
+					<button
+						id={index}
+						onClick={handleDelete}>
 						{god.getLocaleString("delete")}
 					</button>
 

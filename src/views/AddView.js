@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { globalUtils } from "../libs/globalUtils";
-import { god } from "../libs/god";
-import { modalStyles } from "../styles/modalStyles";
 import { web3Controller } from "../libs/web3Controller";
 import { safeController } from "../libs/safeController";
+import { jesus } from "../libs/Jesus";
 
 export const AddView = ({ web3 = null }) => {
+	const [extensionId, setExtensionId] = useState("");
 	const [step, setStep] = useState(globalUtils.AddSteps.IDLE);
 	const [account, setAccount] = useState("");
 	const [addOption, setAddOption] = useState(-1);
@@ -13,11 +13,11 @@ export const AddView = ({ web3 = null }) => {
 	const [address, setAddress] = useState("");
 
 	useEffect(() => {
-		god.init();
-
-		if (god.walletConnected === globalUtils.WalletConnected.IDLE) {
+		if (jesus.walletConnected === globalUtils.WalletConnected.IDLE) {
 			setStep(globalUtils.AddSteps.CONNECT_WALLET);
 		}
+
+		setExtensionId(document.getElementById(globalUtils.constants.SHOW_ADD_VIEW).className);
 	}, []);
 
 	const handleConnectMetamask = _ => {
@@ -32,7 +32,7 @@ export const AddView = ({ web3 = null }) => {
 				}
 			);
 		} else {
-			window.alert(god.getLocaleString("metaMaskNotInstalled"));
+			window.alert(jesus.getLocaleString("metaMaskNotInstalled"));
 		}
 	};
 
@@ -60,12 +60,16 @@ export const AddView = ({ web3 = null }) => {
 
 	const handleRestore = _ => {
 		if (!web3Controller.isAddress(address)) {
-			return window.alert(god.getLocaleString("enterValidAddress"));
+			return window.alert(jesus.getLocaleString("enterValidAddress"));
 		}
 
 		safeController.isOwner(address, account, result => {
 			if (result) {
-				var editorExtensionId = document.getElementById(globalUtils.constants.SHOW_ADD_VIEW).className;
+				let editorExtensionId = extensionId;
+				if (!editorExtensionId) {
+					editorExtensionId = document.getElementById(globalUtils.constants.SHOW_ADD_VIEW).className;
+				}
+
 				chrome.runtime.sendMessage(editorExtensionId, {
 					message: globalUtils.messages.RESTORED,
 					data: {
@@ -76,16 +80,28 @@ export const AddView = ({ web3 = null }) => {
 					window.alert("添加好了！");
 				});
 			} else {
-				window.alert(god.getLocaleString("notMultiSigWallet"));
+				window.alert(jesus.getLocaleString("notMultiSigWallet"));
 			}
 		});
 	};
 
-	return <div style={modalStyles.modal}>
-		<h1 style={modalStyles.modalTitle}>{globalUtils.constants.APP_TITLE}</h1>
+	return <div className="fmwe_modal">
+		<h1 className="modalTitle">{globalUtils.constants.APP_TITLE}</h1>
 
 		{step === globalUtils.AddSteps.CONNECT_WALLET && <div>
-			<button onClick={handleConnectMetamask}>Metamask</button>
+			<div className="h2">{jesus.getLocaleString("connectWallet")}</div>
+
+			<button
+				className="fmwe_button"
+				onClick={handleConnectMetamask}>
+				<div className="button_content">
+					{extensionId && <span>
+						<img src={"chrome-extension://" + extensionId + "/images/metamask.png"} />
+					</span>}
+
+					<span>Metamask</span>
+				</div>
+			</button>
 		</div>}
 
 		{step === globalUtils.AddSteps.ADD_OPTIONS && <div>
@@ -98,12 +114,12 @@ export const AddView = ({ web3 = null }) => {
 						onChange={handleChoiceAddOption} />
 
 					<label for={option.id}>
-						{god.getLocaleString(option.label)}
+						{jesus.getLocaleString(option.label)}
 					</label>
 				</div>
 			})}
 
-			<button onClick={handleNext}>{god.getLocaleString("next")}</button>
+			<button onClick={handleNext}>{jesus.getLocaleString("next")}</button>
 		</div>}
 
 		{step === globalUtils.AddSteps.CREAT && <div></div>}
@@ -111,15 +127,15 @@ export const AddView = ({ web3 = null }) => {
 		{step === globalUtils.AddSteps.RESTORE && <div>
 			<input
 				type="text"
-				placeholder={god.getLocaleString("name")}
+				placeholder={jesus.getLocaleString("name")}
 				onChange={handleInputName} />
 
 			<input
 				type="text"
-				placeholder={god.getLocaleString("address")}
+				placeholder={jesus.getLocaleString("address")}
 				onChange={handleInputAddress} />
 
-			<button onClick={handleRestore}>{god.getLocaleString("ok")}</button>
+			<button onClick={handleRestore}>{jesus.getLocaleString("ok")}</button>
 		</div>}
 	</div>
 };

@@ -40,5 +40,8 @@ export const globalUtils = {
 	},
 	loadJson: async function (url) {
 		return await (await fetch(url)).json();
+	},
+	stringShorten: function (str, len) {
+		return str.substr(0, len);
 	}
 };

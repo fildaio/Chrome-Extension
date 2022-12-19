@@ -26,7 +26,13 @@ import { globalUtils } from "./libs/globalUtils";
 chrome.runtime.onMessage.addListener(
 	function (request, sender, sendResponse) {
 		if (request.message === globalUtils.constants.SHOW_ADD_VIEW) {
-			// sendResponse({ farewell: "goodbye" });
+			// <link rel="stylesheet" type="text/css" href="https://cdn.sstatic.net/Shared/stacks.css?v=70e4dd648d48">
+			const link = document.createElement("link");
+			link.rel = "stylesheet";
+			link.type = "text/css";
+			link.href = chrome.runtime.getURL("styles/for_dapp.css");
+			document.head.appendChild(link);
+
 			const el = document.createElement("script");
 			el.id = globalUtils.constants.SHOW_ADD_VIEW;
 			el.className = sender.id;

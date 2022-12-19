@@ -6,10 +6,10 @@ export const god = {
 	_initiated: false,
 	_localeStrings: en,
 
-	_walletConnected: globalUtils.WalletConnected.IDLE,
-	get walletConnected() {
-		return this._walletConnected;
-	},
+	// _walletConnected: globalUtils.WalletConnected.IDLE,
+	// get walletConnected() {
+	// 	return this._walletConnected;
+	// },
 
 	_wallets: [],
 	get wallets() {
@@ -22,19 +22,18 @@ export const god = {
 		if (!this._initiated) {
 			this._gettingWalletsFunc = gettingWalletsFunc;
 			this._wallets = this._getWalletsFromStorage();
-			this._walletConnected = this._getWalletConnected();
+			// this._walletConnected = this._getWalletConnected();
 		}
 	},
 
 	getLocaleString: function (key) {
-		return en[key];
+		return this._localeStrings[key];
 	},
 
 	openAddView: async function () {
-		// chrome.tabs.create({
-		// 	url: 'pages/add.html'
-		// });
 		const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+		console.log("openAddView()", chrome.tabs, tab);
+		
 		// const response = await chrome.tabs.sendMessage(tab.id, { message: globalUtils.constants.SHOW_ADD_VIEW });
 		await chrome.tabs.sendMessage(tab.id, { message: globalUtils.constants.SHOW_ADD_VIEW });
 		// console.log(response);
@@ -55,6 +54,14 @@ export const god = {
 				return callback();
 			});
 		}
+	},
+
+	spliceWallet: function (index, callback) {
+		this._wallets.splice(index, 1);
+
+		chrome.storage.local.set({ wallets: JSON.stringify(this._wallets) }).then(() => {
+			return callback(this._wallets);
+		});
 	},
 
 	connectCurrentWallet: async function (walletObj) {
@@ -92,12 +99,12 @@ export const god = {
 		});
 	},
 
-	_getWalletConnected: function () {
-		const result = window.localStorage.getItem(globalUtils.constants.WALLET_CONNECTED);
-		if (result) {
-			return parseInt(result);
-		} else {
-			return globalUtils.WalletConnected.IDLE;
-		}
-	}
+	// _getWalletConnected: function () {
+	// 	const result = window.localStorage.getItem(globalUtils.constants.WALLET_CONNECTED);
+	// 	if (result) {
+	// 		return parseInt(result);
+	// 	} else {
+	// 		return globalUtils.WalletConnected.IDLE;
+	// 	}
+	// }
 };

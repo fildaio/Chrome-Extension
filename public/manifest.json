@@ -8,7 +8,11 @@
 			"resources": [
 				"scripts/inject.js",
 				"scripts/add.js",
-				"scripts/abis/MultiSigWalletWithDailyLimit.json"
+				"scripts/abis/MultiSigWalletWithDailyLimit.json",
+				"styles/for_dapp.css",
+				"fonts/Rubik-Regular.ttf",
+				"fonts/DaysOne-Regular.ttf",
+				"images/metamask.png"
 			],
 			"matches": [
 				"https://*/*",
