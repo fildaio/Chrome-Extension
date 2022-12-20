@@ -33,7 +33,7 @@
 	justify-content: flex-end;
 	align-items: center;
 	column-gap: 1em;
-	margin: 1em 0;
+	margin: 1.5em 0 1em 0;
 }
 
 .fmwe_modal .h2 {
@@ -42,6 +42,30 @@
 	text-transform: capitalize;
 	font-weight: bolder;
 	margin: 2em 0;
+}
+
+.fmwe_label {
+	font-family: rubik;
+	margin-left: 1em;
+	text-transform: capitalize;
+}
+
+.fmwe_inputs {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	row-gap: 1em;
+}
+
+.fmwe_inputs input {
+	width: 100%;
+	outline: none;
+	border: 1px solid darkblue;
+	background-color: transparent;
+	color: white;
+	font-family: rubik;
+	border-radius: 12px;
+	padding: 0.5em;
 }
 
 .fmwe_button {
@@ -56,6 +80,11 @@
 	text-transform: capitalize;
 	cursor: pointer;
 	font-family: daysOne;
+}
+
+.fmwe_button :disabled {
+	filter: grayscale(100%);
+	cursor: not-allowed;
 }
 
 .fmwe_small_button {
@@ -73,10 +102,44 @@
 	font-size: 0.8em;
 }
 
+.fmwe_small_button :disabled {
+	filter: grayscale(100%);
+	cursor: not-allowed;
+}
+
 .fmwe_button .button_content {
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
 	column-gap: 1em;
+}
+
+.fmwe_table {
+	width: 100%;
+	border: 1px solid darkblue;
+	padding: 1em;
+}
+
+.fmwe_table caption {
+	font-family: daysOne;
+	font-size: 0.8em;
+	font-weight: bolder;
+	text-transform: uppercase;
+	padding: 1em 0;
+	text-align: left;
+	caption-side: top;
+}
+
+.fmwe_table thead tr th {
+	padding: 0.5em;
+	text-transform: capitalize;
+	font-family: daysOne;
+	font-size: 0.8em;
+}
+
+.fmwe_table tbody tr td {
+	padding: 0.5em;
+	font-family: rubik;
+	font-size: 0.8em;
 }

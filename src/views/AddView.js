@@ -11,6 +11,11 @@ export const AddView = ({ onClose = null }) => {
 	const [addOption, setAddOption] = useState(-1);
 	const [name, setName] = useState("");
 	const [address, setAddress] = useState("");
+	const [ownerName, setOwnerName] = useState("");
+	const [ownerAddress, setOwnerAddress] = useState("");
+	const [owners, setOwners] = useState([]);
+	const [requiredConfirmations, setRequiredConfirmations] = useState(1);
+	const [dailyLimit, setDailyLimit] = useState(0);
 
 	useEffect(() => {
 		if (jesus.walletConnected === globalUtils.WalletConnected.IDLE) {
@@ -58,6 +63,42 @@ export const AddView = ({ onClose = null }) => {
 		setAddress(event.currentTarget.value);
 	};
 
+	const sendAddedMessage = (name, address) => {
+		let editorExtensionId = extensionId;
+		if (!editorExtensionId) {
+			editorExtensionId = document.getElementById(globalUtils.constants.SHOW_ADD_VIEW).className;
+		}
+
+		chrome.runtime.sendMessage(editorExtensionId, {
+			message: globalUtils.messages.RESTORED,
+			data: {
+				name,
+				address
+			}
+		}, response => {
+			setName("");
+			setAddress("");
+			setStep(globalUtils.AddSteps.ADD_OPTIONS);
+		});
+	};
+
+	const handleDeploy = () => {
+		const ownerAddresses = [account];
+		owners.map(owner => {
+			ownerAddresses.push(owner.address);
+		});
+
+		safeController.deploy(
+			ownerAddresses,
+			requiredConfirmations,
+			dailyLimit,
+			account,
+			deployed => {
+				sendAddedMessage(name, deployed);
+			}
+		);
+	};
+
 	const handleRestore = _ => {
 		if (!web3Controller.isAddress(address)) {
 			return window.alert(jesus.getLocaleString("enterValidAddress"));
@@ -65,24 +106,57 @@ export const AddView = ({ onClose = null }) => {
 
 		safeController.isOwner(address, account, result => {
 			if (result) {
-				let editorExtensionId = extensionId;
-				if (!editorExtensionId) {
-					editorExtensionId = document.getElementById(globalUtils.constants.SHOW_ADD_VIEW).className;
-				}
-
-				chrome.runtime.sendMessage(editorExtensionId, {
-					message: globalUtils.messages.RESTORED,
-					data: {
-						name,
-						address
-					}
-				}, response => {
-					window.alert("添加好了！");
-				});
+				sendAddedMessage(name, address);
 			} else {
 				window.alert(jesus.getLocaleString("notMultiSigWallet"));
 			}
 		});
+	};
+
+	const handleRemoveOwner = event => {
+		const idx = parseInt(event.currentTarget.id);
+		owners.splice(idx, 1);
+		setOwners([...owners]);
+	};
+
+	const handleInputOwnerName = event => {
+		setOwnerName(event.currentTarget.value);
+	};
+
+	const handleInputOwnerAddress = event => {
+		const val = event.currentTarget.value;
+
+		if (val.toLocaleLowerCase() === account.toLocaleLowerCase()) {
+			return window.alert(jesus.getLocaleString("enterValidAddress"));
+		}
+
+		setOwnerAddress(val);
+	};
+
+	const handleAddOwner = () => {
+		if (!web3Controller.isAddress(ownerAddress)) {
+			return window.alert(jesus.getLocaleString("enterValidAddress"));
+		}
+
+		owners.push({
+			name: ownerName,
+			address: ownerAddress
+		});
+		setOwners([...owners]);
+	};
+
+	const handleChangeRequiredConfirmations = event => {
+		const val = parseInt(event.currentTarget.value);
+		if (!isNaN(val)) {
+			setRequiredConfirmations(val);
+		}
+	};
+
+	const handleChangeDailyLimit = event => {
+		const val = parseInt(event.currentTarget.value);
+		if (!isNaN(val)) {
+			setDailyLimit(val);
+		}
 	};
 
 	return <div className="fmwe_modal">
@@ -115,32 +189,142 @@ export const AddView = ({ onClose = null }) => {
 						id={option.value}
 						onChange={handleChoiceAddOption} />
 
-					<label for={option.id}>
+					<label
+						for={option.id}
+						className="fmwe_label">
 						{jesus.getLocaleString(option.label)}
 					</label>
 				</div>
 			})}
-
-			<button onClick={handleNext}>{jesus.getLocaleString("next")}</button>
 		</div>}
 
-		{step === globalUtils.AddSteps.CREAT && <div></div>}
+		{step === globalUtils.AddSteps.CREAT && <div>
+			<div className="h2">{jesus.getLocaleString("deployNewWallet")}</div>
+
+			<div className="fmwe_inputs">
+				<input
+					type="text"
+					placeholder={jesus.getLocaleString("name")}
+					onChange={handleInputName} />
+
+				<input
+					type="number"
+					min={1}
+					step={1}
+					defaultValue={1}
+					placeholder={jesus.getLocaleString("requiredConfirmations")}
+					onChange={handleChangeRequiredConfirmations} />
+
+				<input
+					type="number"
+					min={0}
+					step={1}
+					defaultValue={0}
+					placeholder={jesus.getLocaleString("dailyLimit") + "(" + globalUtils.constants.CURRENCY_SYMBOL + ")"}
+					onChange={handleChangeDailyLimit} />
+
+				<table className="fmwe_table">
+					<caption>
+						{jesus.getLocaleString("owners")}
+					</caption>
+
+					<thead>
+						<tr>
+							<th>{jesus.getLocaleString("name")}</th>
+							<th>{jesus.getLocaleString("address")}</th>
+							<th>{jesus.getLocaleString("action")}</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr>
+							<td>{jesus.getLocaleString("myAccount")}</td>
+							<td>{account}</td>
+							<td></td>
+						</tr>
+
+						{owners.map((owner, index) => {
+							return <tr>
+								<td>{owner.name}</td>
+
+								<td>{owner.address}</td>
+
+								<td>
+									<button
+										id={index}
+										className="fmwe_small_button"
+										onClick={handleRemoveOwner}>
+										{jesus.getLocaleString("remove")}
+									</button>
+								</td>
+							</tr>
+						})}
+
+						<tr>
+							<td>
+								<input
+									type="text"
+									placeholder={jesus.getLocaleString("name")}
+									onChange={handleInputOwnerName} />
+							</td>
+
+							<td>
+								<input
+									type="text"
+									placeholder={jesus.getLocaleString("address")}
+									onChange={handleInputOwnerAddress} />
+							</td>
+
+							<td>
+								<button
+									className="fmwe_small_button"
+									onClick={handleAddOwner}
+									disabled={!ownerName || !ownerAddress}>
+									{jesus.getLocaleString("add")}
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>}
 
 		{step === globalUtils.AddSteps.RESTORE && <div>
-			<input
-				type="text"
-				placeholder={jesus.getLocaleString("name")}
-				onChange={handleInputName} />
+			<div className="h2">{jesus.getLocaleString("restoreDeployedWallet")}</div>
 
-			<input
-				type="text"
-				placeholder={jesus.getLocaleString("address")}
-				onChange={handleInputAddress} />
+			<div className="fmwe_inputs">
+				<input
+					type="text"
+					placeholder={jesus.getLocaleString("name")}
+					onChange={handleInputName} />
 
-			<button onClick={handleRestore}>{jesus.getLocaleString("ok")}</button>
+				<input
+					type="text"
+					placeholder={jesus.getLocaleString("address")}
+					onChange={handleInputAddress} />
+			</div>
 		</div>}
 
 		<div className="buttons">
+			{step === globalUtils.AddSteps.ADD_OPTIONS && <button
+				className="fmwe_small_button"
+				onClick={handleNext}>
+				{jesus.getLocaleString("next")}
+			</button>}
+
+			{step === globalUtils.AddSteps.RESTORE && <button
+				className="fmwe_small_button"
+				onClick={handleRestore}>
+				{jesus.getLocaleString("restore")}
+			</button>}
+
+			{step === globalUtils.AddSteps.CREAT && <button
+				className="fmwe_small_button"
+				onClick={handleDeploy}
+				disabled={!name}>
+				{jesus.getLocaleString("deploy")}
+			</button>}
+
 			<button
 				className="fmwe_small_button"
 				onClick={onClose}>

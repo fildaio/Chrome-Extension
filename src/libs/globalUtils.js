@@ -4,7 +4,8 @@ export const globalUtils = {
 		WALLETS: "wallets",
 		WALLET_CONNECTED: "walletConnected",
 		SHOW_ADD_VIEW: "showAddView",
-		ADD_OPTIONS: "addOptions"
+		ADD_OPTIONS: "addOptions",
+		CURRENCY_SYMBOL: "ELA"
 	},
 	messages: {
 		RESTORED: "restored",
