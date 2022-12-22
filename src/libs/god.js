@@ -32,8 +32,8 @@ export const god = {
 
 	openAddView: async function () {
 		const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
-		console.log("openAddView()", chrome.tabs, tab);
-		
+		// console.log("openAddView()", chrome.tabs, tab);
+
 		// const response = await chrome.tabs.sendMessage(tab.id, { message: globalUtils.constants.SHOW_ADD_VIEW });
 		await chrome.tabs.sendMessage(tab.id, { message: globalUtils.constants.SHOW_ADD_VIEW });
 		// console.log(response);
@@ -41,6 +41,10 @@ export const god = {
 
 	openModal: function (modal) {
 		ReactDOM.render(modal, document.getElementById("modalContainer"));
+	},
+
+	closeModal: function () {
+		ReactDOM.unmountComponentAtNode(document.getElementById("modalContainer"));
 	},
 
 	pushWallet: function (name, address, callback) {
@@ -75,6 +79,14 @@ export const god = {
 	saveCurrentWallet: function (walletObj, callback) {
 		chrome.storage.local.set({ currentWallet: JSON.stringify(walletObj) }).then(_ => {
 			if (callback) callback();
+		});
+	},
+
+	loadCurrentWallet: function (callback) {
+		chrome.storage.local.get(["currentWallet"]).then(result => {
+			if (result && callback) {
+				return callback(JSON.parse(result.currentWallet));
+			}
 		});
 	},
 

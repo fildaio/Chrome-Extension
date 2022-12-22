@@ -6,6 +6,15 @@ export const web3Controller = {
 	_provider: null,
 	_account: "",
 
+	initWithRpc: async function (rpc, callback) {
+		this._web3 = new Web3(rpc);
+
+		callback({
+			web3: this._web3,
+			provider: this._web3.currentProvider
+		});
+	},
+
 	connect: async function (walletTitle, provider, callback) {
 		if (walletTitle === globalUtils.WalletTitle.METAMASK && provider && callback) {
 			this._provider = provider
@@ -24,5 +33,9 @@ export const web3Controller = {
 
 	isAddress: function (addr) {
 		return this._web3?.utils.isAddress(addr);
+	},
+
+	getBalance: function (addr, callback) {
+		this._web3.eth.getBalance(addr).then(callback);
 	}
 };

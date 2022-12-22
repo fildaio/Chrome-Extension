@@ -2,10 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Button } from "../components/Button";
 import { globalUtils } from "../libs/globalUtils";
 import { god } from "../libs/god";
+import { WalletList } from "./WalletList";
+import { web3Controller } from "../libs/web3Controller";
+import BigNumber from "bignumber.js";
 
 export const PopupView = ({ }) => {
 	const [wallets, setWallets] = useState([]);
 	const [currentWallet, setCurrentWallet] = useState(null);
+	const [balance, setBalance] = useState(globalUtils.constants.ZERO_BN);
+	const [web3, setWeb3] = useState(null);
 
 	const getWallets = wallets => {
 		setWallets(wallets);
@@ -13,7 +18,25 @@ export const PopupView = ({ }) => {
 
 	useEffect(() => {
 		god.init(getWallets);
+
+		god.loadCurrentWallet(res => {
+			setCurrentWallet(res);
+		});
+
+		web3Controller.initWithRpc(globalUtils.web3.rpc, web3Bundle => {
+			setWeb3(web3Bundle.web3);
+		});
 	}, []);
+
+	useEffect(() => {
+		if (!web3 || !currentWallet) {
+			return;
+		}
+
+		web3Controller.getBalance(currentWallet.address, bal => {
+			setBalance(BigNumber(bal));
+		});
+	}, [web3, currentWallet]);
 
 	const handleOpenCreateView = () => {
 		god.openAddView();
@@ -25,6 +48,7 @@ export const PopupView = ({ }) => {
 		setCurrentWallet(multisigWallet);
 		god.saveCurrentWallet(multisigWallet, null);
 		god.connectCurrentWallet(multisigWallet);
+		god.closeModal();
 	};
 
 	const handleDelete = event => {
@@ -34,6 +58,14 @@ export const PopupView = ({ }) => {
 		});
 	};
 
+	const openWalletListModal = () => {
+		god.openModal(<WalletList
+			wallets={wallets}
+			handleConnect={handleConnect}
+			handleDelete={handleDelete}
+			handleAdd={handleOpenCreateView} />);
+	};
+
 	return <div>
 		<div className="titleBar">
 			<img src="/images/logo32.png" />
@@ -41,9 +73,11 @@ export const PopupView = ({ }) => {
 			<div className="accountMenu">
 				<div className="networkLabel">Elastos</div>
 
-				{currentWallet && <div className="accountLabel">
-					{globalUtils.stringShorten(currentWallet.name, 5)}
-				</div>}
+				{currentWallet && <button
+					className="smallButton"
+					onClick={openWalletListModal}>
+					{globalUtils.stringShorten(currentWallet.name, 5)}&nbsp;▾
+				</button>}
 			</div>
 		</div>
 
@@ -51,36 +85,26 @@ export const PopupView = ({ }) => {
 			<div style={{ height: "250px" }} />
 
 			<Button
-				label={god.getLocaleString("add") + "/" + god.getLocaleString("import")}
+				label={god.getLocaleString("add") + " / " + god.getLocaleString("import")}
 				handleClick={handleOpenCreateView} />
 		</div>}
 
-		{!currentWallet && wallets.map((item, index) => {
-			return <div
-				key={item.address}>
-				<div>{item.name}</div>
+		{/* {!currentWallet && openWalletListModal()} */}
 
-				<div>{item.address}</div>
+		{currentWallet && <div className="mainContent">
+			<div className="nameBar">
+				<div className="name">
+					{currentWallet.name}
+				</div>
 
-				<div>
-					<button
-						id={index}
-						onClick={handleDelete}>
-						{god.getLocaleString("delete")}
-					</button>
-
-					<button
-						id={index}
-						onClick={handleConnect}>
-						{god.getLocaleString("connect")}
-					</button>
+				<div className="address">
+					{globalUtils.stringShorten(currentWallet.address, 5, 4)}
 				</div>
 			</div>
-		})}
 
-		{currentWallet && <div>
-			<h2>{currentWallet.name}</h2>
-			<div>{currentWallet.address}</div>
+			<div className="balanceBlock">
+				{globalUtils.formatBigNumber(balance, globalUtils.currency.decimals, globalUtils.currency.fraction, true) + " " + globalUtils.constants.CURRENCY_SYMBOL}
+			</div>
 		</div>}
 	</div>
 }

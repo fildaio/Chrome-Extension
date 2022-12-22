@@ -29,10 +29,7 @@ button {
 	border: 0;
 	outline: 0;
 	background-image: linear-gradient(250deg, rgba(37, 180, 255, .4), rgba(93, 91, 255, .4), rgba(199, 36, 255, .4)) !important;
-	border-top-left-radius: 1em 1.1em;
-	border-top-right-radius: 1em 1.1em;
-	border-bottom-left-radius: 1em 1.1em;
-	border-bottom-right-radius: 1em 1.1em;
+	border-radius: 1em;
 	padding: 1em 1.5em;
 	width: fit-content;
 	background-color: transparent;
@@ -47,11 +44,23 @@ button {
 	background-clip: content-box, padding-box;
 	padding: 1px;
 	/* z-index: -1; */
-	border-top-left-radius: 1em 1.1em;
-	border-top-right-radius: 1em 1.1em;
-	border-bottom-left-radius: 1em 1.1em;
-	border-bottom-right-radius: 1em 1.1em;
+	border-radius: 1em;
 	width: fit-content;
+}
+
+.smallButton {
+	color: #e8ebf3;
+	border: 0;
+	outline: 0;
+	background-image: linear-gradient(250deg, rgba(37, 180, 255, .4), rgba(93, 91, 255, .4), rgba(199, 36, 255, .4)) !important;
+	border-radius: 1em;
+	padding: 0.5em 1em;
+	width: fit-content;
+	background-color: transparent;
+	text-transform: capitalize;
+	cursor: pointer;
+	font-family: daysOne;
+	font-size: 0.8em;
 }
 
 .tabs {
@@ -97,7 +106,7 @@ button {
 	position: absolute;
 	left: 0;
 	top: 0;
-	background-color: rgba(0, 0, 0, 0.5);
+	background-color: rgba(0, 0, 0, 0.25);
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -139,4 +148,97 @@ button {
 
 .titleBar .accountMenu .accountLabel {
 	font-family: rubik;
+}
+
+.modalLayout {
+	width: 95%;
+	height: fit-content;
+	padding: 1.5em 1em 1em 1em;
+	border-radius: 1em;
+	border: 1px solid darkgray;
+	box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.5);
+}
+
+.modalTitle {
+	font-size: 1em;
+	font-weight: bolder;
+	font-family: daysOne;
+	width: 100%;
+	margin-bottom: 1em;
+	text-transform: uppercase;
+}
+
+.walletListItem {
+	display: flex;
+	flex-direction: column;
+	row-gap: 0.5em;
+	padding: 1em;
+	background-color: rgba(255, 255, 255, 0.1);
+	border-radius: 1em;
+	width: calc(100% - 2em);
+}
+
+.walletListItem .name {
+	font-weight: bold;
+	font-family: rubik;
+}
+
+.walletListItem .address {
+	font-family: rubik;
+	color: gainsboro;
+	font-size: 0.8em;
+}
+
+.walletListItem .buttons {
+	display: flex;
+	width: 100%;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: center;
+	column-gap: 1em;
+}
+
+.modalButtons {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: center;
+	column-gap: 1em;
+	margin: 1.5em 0 1em 0;
+}
+
+.mainContent {
+	width: 100%;
+	padding: 1em;
+}
+
+.mainContent .nameBar {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	row-gap: 0.5em;
+}
+
+.mainContent .nameBar .name {
+	font-family: daysOne;
+	font-size: 2em;
+}
+
+.mainContent .nameBar .address {
+	font-family: rubik;
+	font-size: 0.8em;
+}
+
+.mainContent .balanceBlock {
+	width: 100%;
+	margin: 2em 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 2em;
+	font-family: rubik;
+	font-weight: bolder;
 }

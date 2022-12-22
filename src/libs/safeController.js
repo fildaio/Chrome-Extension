@@ -2,11 +2,9 @@ import multiSigWalletWithDailyLimit from "../assets/abis/MultiSigWalletWithDaily
 
 export const safeController = {
 	_web3: null,
-	_safes: null,
 
 	init: function (web3) {
 		this._web3 = web3;
-		this._safes = new Map();
 	},
 
 	isOwner: async function (safe, account, callback) {
