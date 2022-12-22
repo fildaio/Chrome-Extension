@@ -5,6 +5,7 @@ import { god } from "../libs/god";
 import { WalletList } from "./WalletList";
 import { web3Controller } from "../libs/web3Controller";
 import BigNumber from "bignumber.js";
+import { Tabs } from "../components/Tabs";
 
 export const PopupView = ({ }) => {
 	const [wallets, setWallets] = useState([]);
@@ -103,8 +104,22 @@ export const PopupView = ({ }) => {
 			</div>
 
 			<div className="balanceBlock">
-				{globalUtils.formatBigNumber(balance, globalUtils.currency.decimals, globalUtils.currency.fraction, true) + " " + globalUtils.constants.CURRENCY_SYMBOL}
+				<div>
+					{globalUtils.formatBigNumber(balance, globalUtils.currency.decimals, globalUtils.currency.fraction, true) + " " + globalUtils.constants.CURRENCY_SYMBOL}
+				</div>
+
+				<div className="actions">
+					<button className="smallButton">
+						{god.getLocaleString("send")}
+					</button>
+				</div>
 			</div>
+
+			<Tabs
+				name="accountTabs"
+				options={globalUtils.accountTabs} />
+
+			<div className="tabContent"></div>
 		</div>}
 	</div>
 }

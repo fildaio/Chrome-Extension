@@ -35,6 +35,18 @@ export const globalUtils = {
 			value: 1
 		}
 	],
+	accountTabs: [
+		{
+			id: "tokens",
+			label: "tokens",
+			value: 0
+		},
+		{
+			id: "transactions",
+			label: "transactions",
+			value: 1
+		}
+	],
 	AddSteps: {
 		IDLE: 0,
 		CONNECT_WALLET: 1,

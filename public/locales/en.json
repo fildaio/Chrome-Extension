@@ -26,5 +26,8 @@
 	"deploy": "deploy",
 	"remove": "remove",
 	"wallets": "wallets",
-	"open": "open"
+	"open": "open",
+	"tokens": "tokens",
+	"transactions": "transactions",
+	"send": "send"
 }
