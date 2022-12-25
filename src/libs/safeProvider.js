@@ -18,7 +18,7 @@ export const safeProvider = {
 	owner: "",
 	_originProvider: null,
 	_originWeb3: null,
-	_gasLimit: 0,
+	_gasLimit: "0x0",
 
 	init: function (provider) {
 		this._originProvider = provider;
@@ -55,7 +55,7 @@ export const safeProvider = {
 			payload.params[0].from.toLocaleLowerCase() === this.safeAddress.toLocaleLowerCase()
 		) {
 			const params = payload.params[0];
-			const theContract = new this._originWeb3.eth.Contract(multiSigWalletWithDailyLimit, this.safeAddress);
+			const theContract = new this._originWeb3.eth.Contract(multiSigWalletWithDailyLimit.abi, this.safeAddress);
 			const contractFunc = theContract.methods.submitTransaction(
 				params.to,
 				params.value ?? 0,
@@ -67,7 +67,6 @@ export const safeProvider = {
 			params.to = this._originWeb3.utils.toChecksumAddress(this.safeAddress);
 			params.value = 0;
 			params.gas = await this._getGasLimit();
-			// console.debug(params);
 		}
 
 		return await this._originProvider.request(payload);
@@ -92,8 +91,11 @@ export const safeProvider = {
 	},
 
 	_getGasLimit: async function () {
-		if (this._gasLimit === 0 && this._originWeb3) {
-			// this._gasLimit = this._originWeb3.utils.toHex(await FetchData.getGasLimit(this._originWeb3));
+		if (this._gasLimit === "0x0" && this._originWeb3) {
+			const block = await this._originWeb3.eth.getBlock("latest", false);
+			if (block?.gasLimit) {
+				this._gasLimit = this._originWeb3.utils.toHex(block.gasLimit);
+			}
 		}
 
 		return this._gasLimit;
