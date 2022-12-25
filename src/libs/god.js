@@ -6,11 +6,6 @@ export const god = {
 	_initiated: false,
 	_localeStrings: en,
 
-	// _walletConnected: globalUtils.WalletConnected.IDLE,
-	// get walletConnected() {
-	// 	return this._walletConnected;
-	// },
-
 	_wallets: [],
 	get wallets() {
 		return this._wallets;
@@ -70,8 +65,14 @@ export const god = {
 
 	connectCurrentWallet: async function (walletObj) {
 		const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
-		await chrome.tabs.sendMessage(tab.id, {
+		chrome.tabs.sendMessage(tab.id, {
 			message: globalUtils.messages.CONNECT_MULTISIG_WALLET,
+			data: walletObj,
+			tab: tab.id
+		});
+
+		chrome.runtime.sendMessage(null, {
+			message: globalUtils.messages.SELECTED_WALLET,
 			data: walletObj
 		});
 	},

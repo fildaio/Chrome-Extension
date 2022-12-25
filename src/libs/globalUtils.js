@@ -20,7 +20,8 @@ export const globalUtils = {
 	},
 	messages: {
 		RESTORED: "restored",
-		CONNECT_MULTISIG_WALLET: "connectMultisigWallet"
+		CONNECT_MULTISIG_WALLET: "connectMultisigWallet",
+		SELECTED_WALLET: "selectedWallet"
 	},
 	safeContractABI: "scripts/abis/MultiSigWalletWithDailyLimit.json",
 	addTabs: [

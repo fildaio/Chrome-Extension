@@ -22,6 +22,7 @@ export const PopupView = ({ }) => {
 
 		god.loadCurrentWallet(res => {
 			setCurrentWallet(res);
+			// god.connectCurrentWallet(res);
 		});
 
 		web3Controller.initWithRpc(globalUtils.web3.rpc, web3Bundle => {

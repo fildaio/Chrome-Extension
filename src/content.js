@@ -37,17 +37,18 @@ chrome.runtime.onMessage.addListener(
 			el.id = globalUtils.constants.SHOW_ADD_VIEW;
 			el.className = sender.id;
 			el.src = chrome.runtime.getURL("scripts/add.js");
-			document.body.appendChild(el);
+			return document.body.appendChild(el);
 		}
 
-		// console.log(request, sender, sendResponse);
 		if (request.message === globalUtils.messages.CONNECT_MULTISIG_WALLET) {
 			const el = document.createElement("script");
 			el.id = globalUtils.messages.CONNECT_MULTISIG_WALLET;
 			el.className = request.data.address;
 			el.src = chrome.runtime.getURL("scripts/inject.js");
-			document.head.appendChild(el);
+			return document.head.appendChild(el);
 		}
+
+		console.log(request, sender, sendResponse);
 	}
 );
 

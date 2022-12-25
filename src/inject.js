@@ -7,9 +7,9 @@ const main = () => {
 	if (window.ethereum) {
 		window.fildaSafeProvider = safeProvider.init(window.ethereum);
 		window.fildaSafeProvider.safeAddress = walletAddress;
-		window.alert("注入成功！");
+		// window.alert("注入成功！");
 	} else {
-		console.log("没有provider");
+		console.warn("没有window.ethereum");
 	}
 };
 

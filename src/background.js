@@ -1,21 +1,5 @@
-// const foo = () => {
-// 	setTimeout(() => {
-// 		window.ethereum = {
-// 			request: function (arg) {
-// 				console.log(arg);
-// 			},
-// 			enable: function () {
-// 				console.log("开妈了。");
-// 			}
-// 		};
-// 		console.log(window);
-// 	}, 1000);
-// };
-
 import { globalUtils } from "./libs/globalUtils";
 import { god } from "./libs/god";
-
-// foo();
 
 // chrome.storage.local.get(["badgeText"], ({ badgeText }) => {
 // 	console.log("badgeText =", badgeText);
@@ -34,26 +18,6 @@ import { god } from "./libs/god";
 // 	});
 // });
 
-// chrome.runtime.onMessage.addListener(
-// 	function (request, sender, sendResponse) {
-// 		console.log("接收到消息", request, sender, sendResponse);
-
-// 		console.log(sender.tab ?
-// 			"from a content script:" + sender.tab.url :
-// 			"from the extension", request);
-// 		if (request.greeting === "hello")
-// 			sendResponse({ farewell: "接收到了content发来的消息" });
-// 	}
-// );
-
-// chrome.action.onClicked.addListener(tab => {
-// 	console.log(tab);
-
-// 	chrome.scripting.executeScript({
-// 		target: { tabId: tab.id },
-// 		files: ['scripts/exec.js']
-// 	});
-// });
 
 chrome.runtime.onMessageExternal.addListener(
 	function (request, sender, sendResponse) {
@@ -63,3 +27,29 @@ chrome.runtime.onMessageExternal.addListener(
 		}
 	}
 );
+
+chrome.tabs.onActivated.addListener(activeInfo => {
+	chrome.scripting.executeScript({
+		target: { tabId: activeInfo.tabId },
+		func: () => {
+			chrome.storage.local.get(["currentWallet"]).then(result => {
+				if (result) {
+					const addr = JSON.parse(result.currentWallet).address;
+					if (addr) {
+						const tagId = "connectMultisigWallet";
+						const tag = document.getElementById(tagId);
+						if (tag) {
+							return tag.className = addr;
+						} else {
+							const el = document.createElement("script");
+							el.id = tagId;
+							el.className = addr;
+							el.src = chrome.runtime.getURL("scripts/inject.js");
+							return document.head.appendChild(el);
+						}
+					}
+				}
+			});
+		}
+	});
+});
