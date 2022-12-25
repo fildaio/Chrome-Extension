@@ -53,3 +53,31 @@ chrome.tabs.onActivated.addListener(activeInfo => {
 		}
 	});
 });
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+	if (changeInfo.status === 'complete') {
+		chrome.scripting.executeScript({
+			target: { tabId: tabId },
+			func: () => {
+				chrome.storage.local.get(["currentWallet"]).then(result => {
+					if (result) {
+						const addr = JSON.parse(result.currentWallet).address;
+						if (addr) {
+							const tagId = "connectMultisigWallet";
+							const tag = document.getElementById(tagId);
+							if (tag) {
+								return tag.className = addr;
+							} else {
+								const el = document.createElement("script");
+								el.id = tagId;
+								el.className = addr;
+								el.src = chrome.runtime.getURL("scripts/inject.js");
+								return document.head.appendChild(el);
+							}
+						}
+					}
+				});
+			}
+		});
+	}
+}); 
