@@ -330,6 +330,13 @@ export const AddView = ({ onClose = null }) => {
 				onClick={onClose}>
 				{jesus.getLocaleString("close")}
 			</button>
+
+			{/* <button
+				className="fmwe_small_button"
+				onClick={event => {
+					console.log("chrome:", chrome);
+					console.log("chrome.action:", chrome.action);
+				}}>弹出</button> */}
 		</div>
 	</div>
 };

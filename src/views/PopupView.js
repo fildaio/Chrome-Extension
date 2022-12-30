@@ -93,7 +93,7 @@ export const PopupView = ({ }) => {
 
 		{/* {!currentWallet && openWalletListModal()} */}
 
-		{currentWallet && <div className="mainContent">
+		{wallets.length > 0 && currentWallet && <div className="mainContent">
 			<div className="nameBar">
 				<div className="name">
 					{currentWallet.name}

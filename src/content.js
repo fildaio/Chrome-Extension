@@ -85,3 +85,12 @@ chrome.runtime.onMessage.addListener(
 // 	el.src = chrome.runtime.getURL("scripts/inject.js");
 // 	document.head.appendChild(el);
 // };
+
+// const main = () => {
+// 	setTimeout(() => {
+// 		console.log("chrome:", chrome);
+// 		console.log("chrome.action:", chrome.action);
+// 	}, 3000);
+// };
+
+// main();
