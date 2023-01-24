@@ -24,7 +24,7 @@ import { globalUtils } from "./libs/globalUtils";
 // foo();
 
 chrome.runtime.onMessage.addListener(
-	function (request, sender, sendResponse) {
+	async function (request, sender, sendResponse) {
 		if (request.message === globalUtils.constants.SHOW_ADD_VIEW) {
 			// <link rel="stylesheet" type="text/css" href="https://cdn.sstatic.net/Shared/stacks.css?v=70e4dd648d48">
 			const link = document.createElement("link");
@@ -43,7 +43,8 @@ chrome.runtime.onMessage.addListener(
 		if (request.message === globalUtils.messages.CONNECT_MULTISIG_WALLET) {
 			const el = document.createElement("script");
 			el.id = globalUtils.messages.CONNECT_MULTISIG_WALLET;
-			el.className = request.data.address;
+			el.dataset.walletAddress = request.data.address;
+			el.dataset.extensionId = sender.id;
 			el.src = chrome.runtime.getURL("scripts/inject.js");
 			return document.head.appendChild(el);
 		}

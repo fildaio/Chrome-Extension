@@ -71,5 +71,9 @@
 	],
 	"background": {
 		"service_worker": "scripts/background.js"
+	},
+	"options_ui": {
+		"page": "pages/options.html",
+		"open_in_tab": false
 	}
 }

@@ -1,6 +1,7 @@
 import BigNumber from "bignumber.js";
 
 export const globalUtils = {
+	tabId: 0,
 	constants: {
 		APP_TITLE: "Filda Multisig Wallet",
 		WALLETS: "wallets",
@@ -8,7 +9,8 @@ export const globalUtils = {
 		SHOW_ADD_VIEW: "showAddView",
 		ADD_OPTIONS: "addOptions",
 		CURRENCY_SYMBOL: "ELA",
-		ZERO_BN: BigNumber(0)
+		ZERO_BN: BigNumber(0),
+		PROVIDER_SELECTED: "providerSelected"
 	},
 	currency: {
 		decimals: 18,
@@ -21,7 +23,10 @@ export const globalUtils = {
 	messages: {
 		RESTORED: "restored",
 		CONNECT_MULTISIG_WALLET: "connectMultisigWallet",
-		SELECTED_WALLET: "selectedWallet"
+		SELECTED_WALLET: "selectedWallet",
+		OPEN_OPTIONS: "openOptions",
+		CHECK_PROVIDER_OPTIONS: "checkProviderOptions",
+		SAVE_LOCAL_STORAGE: "saveLocalStorage"
 	},
 	safeContractABI: "scripts/abis/MultiSigWalletWithDailyLimit.json",
 	addTabs: [

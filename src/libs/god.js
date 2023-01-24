@@ -112,6 +112,28 @@ export const god = {
 		});
 	},
 
+	getItemFromLocalStorage: function (key, callback) {
+		chrome.storage.local.get([key]).then(result => {
+			if (result) {
+				return callback(JSON.parse(result[key]));
+			}
+		});
+	},
+
+	setItemInLocalStorage: function (key, value, callback) {
+		const toSave = {};
+		toSave[key] = JSON.stringify(value);
+
+		try {
+			chrome.storage.local.set(toSave).then(_ => {
+				return callback(true);
+			});
+		} catch (error) {
+			console.error(error);
+			return callback(false);
+		}
+	}
+
 	// _getWalletConnected: function () {
 	// 	const result = window.localStorage.getItem(globalUtils.constants.WALLET_CONNECTED);
 	// 	if (result) {

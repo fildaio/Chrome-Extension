@@ -1,15 +1,3 @@
-// export const safeProvider = {
-// 	_originProvider: null,
-
-// 	init: function (provider) {
-// 		if (provider) {
-// 			this._originProvider = provider;
-// 		}
-
-// 		return this;
-// 	}
-// };
-
 import Web3 from "web3";
 import multiSigWalletWithDailyLimit from "../assets/abis/MultiSigWalletWithDailyLimit.json"
 
@@ -19,11 +7,23 @@ export const safeProvider = {
 	_originProvider: null,
 	_originWeb3: null,
 	_gasLimit: "0x0",
+	enable: null,
+	isMetaMask: false,
+	chainId: "0x0",
+	networkVersion: "0",
+	selectedAddress: "",
 
 	init: function (provider) {
 		this._originProvider = provider;
 		this._originWeb3 = new Web3(this._originProvider);
 		this.getAccount();
+
+		this.enable = this._originProvider.enable;
+		this.isMetaMask = this._originProvider.isMetaMask;
+		this.chainId = this._originProvider.chainId;
+		this.networkVersion = this._originProvider.networkVersion;
+		this.selectedAddress = this._originProvider.selectedAddress;
+
 		return this;
 	},
 
