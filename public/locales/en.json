@@ -29,5 +29,8 @@
 	"open": "open",
 	"tokens": "tokens",
 	"transactions": "transactions",
-	"send": "send"
+	"send": "send",
+	"connected": "connected",
+	"multisigProvider": "Multi-signature provider",
+	"originProvider": "origin provider"
 }

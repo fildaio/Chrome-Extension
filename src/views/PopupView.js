@@ -12,6 +12,8 @@ export const PopupView = ({ }) => {
 	const [currentWallet, setCurrentWallet] = useState(null);
 	const [balance, setBalance] = useState(globalUtils.constants.ZERO_BN);
 	const [web3, setWeb3] = useState(null);
+	const [currentTabUrl, setCurrentTabUrl] = useState("");
+	const [isOriginProviderSelected, setIsOriginProviderSelected] = useState(true);
 
 	const getWallets = wallets => {
 		setWallets(wallets);
@@ -27,6 +29,14 @@ export const PopupView = ({ }) => {
 
 		web3Controller.initWithRpc(globalUtils.web3.rpc, web3Bundle => {
 			setWeb3(web3Bundle.web3);
+		});
+
+		god.getItemFromLocalStorage(globalUtils.constants.CURRENT_TAB_URL, res => {
+			setCurrentTabUrl(res.replace("http://", "").replace("https://", ""));
+
+			god.getItemFromLocalStorage(globalUtils.constants.PROVIDER_SELECTED, providers => {
+				setIsOriginProviderSelected(!providers[res]);
+			});
 		});
 	}, []);
 
@@ -68,6 +78,13 @@ export const PopupView = ({ }) => {
 			handleAdd={handleOpenCreateView} />);
 	};
 
+	const handleChangeProvider = event => {
+		chrome.runtime.sendMessage(null, {
+			message: globalUtils.messages.SELECT_MULTISIG_PROVIDER,
+			data: event.target.value === globalUtils.constants.PROVIDER_INJECTED
+		});
+	};
+
 	return <div>
 		<div className="titleBar">
 			<img src="/images/logo32.png" />
@@ -82,6 +99,24 @@ export const PopupView = ({ }) => {
 				</button>}
 			</div>
 		</div>
+
+		{currentTabUrl && <div className="connectStatusBar">
+			<div>{currentTabUrl + " " + god.getLocaleString("connected")}&nbsp;</div>
+
+			<select className="options" onChange={handleChangeProvider}>
+				<option
+					value={globalUtils.constants.ORIGIN_PROVIDER}
+					selected={isOriginProviderSelected}>
+					{god.getLocaleString("originProvider")}
+				</option>
+
+				<option
+					value={globalUtils.constants.PROVIDER_INJECTED}
+					selected={!isOriginProviderSelected}>
+					{god.getLocaleString("multisigProvider")}
+				</option>
+			</select>
+		</div>}
 
 		{wallets.length === 0 && <div className="coverLayout">
 			<div style={{ height: "250px" }} />

@@ -8,9 +8,14 @@ export const globalUtils = {
 		WALLET_CONNECTED: "walletConnected",
 		SHOW_ADD_VIEW: "showAddView",
 		ADD_OPTIONS: "addOptions",
+		PROVIDER_OPTIONS: "providerOptions",
 		CURRENCY_SYMBOL: "ELA",
 		ZERO_BN: BigNumber(0),
-		PROVIDER_SELECTED: "providerSelected"
+		PROVIDER_SELECTED: "providerSelected",
+		CURRENT_TAB_URL: "currentTabUrl",
+		PROVIDER_INJECTED: "providerInjected",
+		ORIGIN_PROVIDER: "originProvider",
+		WEB_2_EXTENSION: "web2Extension"
 	},
 	currency: {
 		decimals: 18,
@@ -26,7 +31,8 @@ export const globalUtils = {
 		SELECTED_WALLET: "selectedWallet",
 		OPEN_OPTIONS: "openOptions",
 		CHECK_PROVIDER_OPTIONS: "checkProviderOptions",
-		SAVE_LOCAL_STORAGE: "saveLocalStorage"
+		SAVE_LOCAL_STORAGE: "saveLocalStorage",
+		SELECT_MULTISIG_PROVIDER: "selectMultisigProvider"
 	},
 	safeContractABI: "scripts/abis/MultiSigWalletWithDailyLimit.json",
 	addTabs: [

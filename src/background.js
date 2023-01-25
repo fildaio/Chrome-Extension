@@ -1,22 +1,7 @@
 import { globalUtils } from "./libs/globalUtils";
 import { god } from "./libs/god";
 
-// chrome.storage.local.get(["badgeText"], ({ badgeText }) => {
-// 	console.log("badgeText =", badgeText);
-// 	chrome.action.setBadgeText({ text: badgeText });
-// });
-
-// // Listener is registered on startup
-// chrome.action.onClicked.addListener(evt => {
-// 	console.log(evt);
-// });
-// chrome.runtime.onInstalled.addListener(() => {
-// 	chrome.contextMenus.create({
-// 		"id": "sampleContextMenu",
-// 		"title": "Sample Context Menu",
-// 		"contexts": ["selection"]
-// 	});
-// });
+let thePort = null;
 
 
 chrome.runtime.onMessageExternal.addListener(
@@ -28,10 +13,12 @@ chrome.runtime.onMessageExternal.addListener(
 		}
 
 		if (request.message === globalUtils.messages.CHECK_PROVIDER_OPTIONS) {
-			// chrome.runtime.openOptionsPage(() => {
-			// 	return sendResponse({ a: 1 });
-			// });
+			god.setItemInLocalStorage(globalUtils.constants.CURRENT_TAB_URL, request.data.url);
+			console.debug("写入了god.currentTabUrl", god.currentTabUrl);
+
 			god.getItemFromLocalStorage(globalUtils.constants.PROVIDER_SELECTED, providers => {
+				console.debug("读取了已存储的记录", providers);
+
 				sendResponse(providers[request.data.url]);
 			});
 		}
@@ -46,6 +33,27 @@ chrome.runtime.onMessageExternal.addListener(
 		}
 
 		return true;
+	}
+);
+
+chrome.runtime.onConnectExternal.addListener(function (port) {
+	thePort = port;
+	console.debug("建立连接，并注册连接", thePort);
+
+	// thePort.onMessage.addListener(function (msg) {
+	// 	console.debug("听到有人叫门", msg);
+	// });
+});
+
+chrome.runtime.onMessage.addListener(
+	function (request, sender, sendResponse) {
+		if (request.message === globalUtils.messages.SELECT_MULTISIG_PROVIDER && thePort) {
+			console.debug("这是从popup来的吗？", request, sender, thePort);
+			thePort.postMessage({
+				message: globalUtils.messages.SELECT_MULTISIG_PROVIDER,
+				data: request.data
+			});
+		}
 	}
 );
 

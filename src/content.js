@@ -24,7 +24,7 @@ import { globalUtils } from "./libs/globalUtils";
 // foo();
 
 chrome.runtime.onMessage.addListener(
-	async function (request, sender, sendResponse) {
+	function (request, sender, sendResponse) {
 		if (request.message === globalUtils.constants.SHOW_ADD_VIEW) {
 			// <link rel="stylesheet" type="text/css" href="https://cdn.sstatic.net/Shared/stacks.css?v=70e4dd648d48">
 			const link = document.createElement("link");
