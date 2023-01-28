@@ -10,7 +10,7 @@ import { Tabs } from "../components/Tabs";
 export const PopupView = ({ }) => {
 	const [wallets, setWallets] = useState([]);
 	const [currentWallet, setCurrentWallet] = useState(null);
-	const [balance, setBalance] = useState(globalUtils.constants.ZERO_BN);
+	const [balance, setBalance] = useState(new BigNumber(0));
 	const [web3, setWeb3] = useState(null);
 	const [currentTabUrl, setCurrentTabUrl] = useState("");
 	const [isOriginProviderSelected, setIsOriginProviderSelected] = useState(true);
@@ -51,7 +51,8 @@ export const PopupView = ({ }) => {
 	}, [web3, currentWallet]);
 
 	const handleOpenCreateView = () => {
-		god.openAddView();
+		// god.openAddView();
+		god.syncFromWalletWebsite();
 	};
 
 	const handleConnect = event => {
@@ -75,7 +76,8 @@ export const PopupView = ({ }) => {
 			wallets={wallets}
 			handleConnect={handleConnect}
 			handleDelete={handleDelete}
-			handleAdd={handleOpenCreateView} />);
+			handleAdd={handleOpenCreateView}
+			handleSync={handleOpenCreateView} />);
 	};
 
 	const handleChangeProvider = event => {

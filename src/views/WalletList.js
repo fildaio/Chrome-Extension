@@ -6,7 +6,8 @@ export const WalletList = ({
 	wallets = [],
 	handleConnect = () => { },
 	handleDelete = () => { },
-	handleAdd = () => { }
+	handleAdd = () => { },
+	handleSync = () => { }
 }) => {
 	const handleCloseModal = () => {
 		god.closeModal();
@@ -47,8 +48,14 @@ export const WalletList = ({
 			<div className="modalButtons">
 				<button
 					className="smallButton"
+					onClick={handleSync}>
+					{god.getLocaleString("sync")}
+				</button>
+
+				<button
+					className="smallButton"
 					onClick={handleAdd}>
-					{god.getLocaleString("add") + " / " + god.getLocaleString("import")}
+					{god.getLocaleString("add")}
 				</button>
 
 				<button

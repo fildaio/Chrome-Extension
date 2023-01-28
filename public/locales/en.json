@@ -32,5 +32,6 @@
 	"send": "send",
 	"connected": "connected",
 	"multisigProvider": "Multi-signature provider",
-	"originProvider": "origin provider"
+	"originProvider": "origin provider",
+	"sync": "sync"
 }

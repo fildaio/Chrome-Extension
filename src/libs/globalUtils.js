@@ -1,4 +1,4 @@
-import BigNumber from "bignumber.js";
+// import BigNumber from "bignumber.js";
 
 export const globalUtils = {
 	tabId: 0,
@@ -6,16 +6,16 @@ export const globalUtils = {
 		APP_TITLE: "Filda Multisig Wallet",
 		WALLETS: "wallets",
 		WALLET_CONNECTED: "walletConnected",
-		SHOW_ADD_VIEW: "showAddView",
 		ADD_OPTIONS: "addOptions",
 		PROVIDER_OPTIONS: "providerOptions",
 		CURRENCY_SYMBOL: "ELA",
-		ZERO_BN: BigNumber(0),
+		// ZERO_BN: BigNumber(0),
 		PROVIDER_SELECTED: "providerSelected",
 		CURRENT_TAB_URL: "currentTabUrl",
 		PROVIDER_INJECTED: "providerInjected",
 		ORIGIN_PROVIDER: "originProvider",
-		WEB_2_EXTENSION: "web2Extension"
+		WEB_2_EXTENSION: "web2Extension",
+		WALLET_WEBSITE_TAB: "walletWebsiteTab"
 	},
 	currency: {
 		decimals: 18,
@@ -26,13 +26,17 @@ export const globalUtils = {
 		rpc: "https://api.elastos.io/eth"
 	},
 	messages: {
+		SHOW_ADD_VIEW: "showAddView",
 		RESTORED: "restored",
 		CONNECT_MULTISIG_WALLET: "connectMultisigWallet",
 		SELECTED_WALLET: "selectedWallet",
 		OPEN_OPTIONS: "openOptions",
 		CHECK_PROVIDER_OPTIONS: "checkProviderOptions",
 		SAVE_LOCAL_STORAGE: "saveLocalStorage",
-		SELECT_MULTISIG_PROVIDER: "selectMultisigProvider"
+		SELECT_MULTISIG_PROVIDER: "selectMultisigProvider",
+		OPEN_WALLET_WEBSITE: "openWalletWebsite",
+		SEND_DATA_FROM_WALLET_WEBSITE: "sendDataFromWalletWebsite",
+		READY_FOR_LISTENING: "readyForListening"
 	},
 	safeContractABI: "scripts/abis/MultiSigWalletWithDailyLimit.json",
 	addTabs: [

@@ -22,7 +22,7 @@
 	],
 	"externally_connectable": {
 		"matches": [
-			"https://www.filda.io/*"
+			"https://wallet.filda.org/*"
 		]
 	},
 	"icons": {

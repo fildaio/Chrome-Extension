@@ -1,6 +1,7 @@
 import { globalUtils } from "./globalUtils";
 import en from "../../public/locales/en.json";
 import ReactDOM from "react-dom";
+import { config } from "./config";
 
 export const god = {
 	_initiated: false,
@@ -25,13 +26,13 @@ export const god = {
 		return this._localeStrings[key];
 	},
 
-	openAddView: async function () {
-		const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
-		// console.log("openAddView()", chrome.tabs, tab);
-
-		// const response = await chrome.tabs.sendMessage(tab.id, { message: globalUtils.constants.SHOW_ADD_VIEW });
-		await chrome.tabs.sendMessage(tab.id, { message: globalUtils.constants.SHOW_ADD_VIEW });
-		// console.log(response);
+	syncFromWalletWebsite: function () {
+		// const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+		// await chrome.tabs.sendMessage(tab.id, { message: globalUtils.constants.SHOW_ADD_VIEW });
+		chrome.tabs.create({
+			active: false,
+			url: config.walletWebSite.root + config.walletWebSite.wallets
+		});
 	},
 
 	openModal: function (modal) {
@@ -48,10 +49,22 @@ export const god = {
 				name,
 				address
 			});
-			// window.localStorage.setItem(globalUtils.constants.WALLETS, JSON.stringify(this._wallets));
-			chrome.storage.local.set({ wallets: JSON.stringify(this._wallets) }).then(() => {
-				return callback();
-			});
+
+			this.setItemInLocalStorage(
+				globalUtils.constants.WALLETS,
+				JSON.stringify(this._wallets),
+				callback
+			);
+		}
+	},
+
+	pushWallets: function (wallets, callback) {
+		wallets.forEach(wallet => {
+			this.pushWallet(wallet.name, wallet.address)
+		});
+
+		if (callback) {
+			window.requestIdleCallback(callback);
 		}
 	},
 
@@ -65,11 +78,14 @@ export const god = {
 
 	connectCurrentWallet: async function (walletObj) {
 		const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
-		chrome.tabs.sendMessage(tab.id, {
-			message: globalUtils.messages.CONNECT_MULTISIG_WALLET,
-			data: walletObj,
-			tab: tab.id
-		});
+
+		if (tab.url.indexOf(config.walletWebSite.root) < 0) {
+			chrome.tabs.sendMessage(tab.id, {
+				message: globalUtils.messages.CONNECT_MULTISIG_WALLET,
+				data: walletObj,
+				tab: tab.id
+			});
+		}
 
 		chrome.runtime.sendMessage(null, {
 			message: globalUtils.messages.SELECTED_WALLET,
@@ -126,11 +142,16 @@ export const god = {
 
 		try {
 			chrome.storage.local.set(toSave).then(_ => {
-				return callback(true);
+				if (callback) {
+					return callback(true);
+				}
 			});
 		} catch (error) {
 			console.error(error);
-			return callback(false);
+
+			if (callback) {
+				return callback(false);
+			}
 		}
 	}
 
