@@ -52,8 +52,12 @@ export const god = {
 
 			this.setItemInLocalStorage(
 				globalUtils.constants.WALLETS,
-				JSON.stringify(this._wallets),
-				callback
+				this._wallets,
+				() => {
+					this._gettingWalletsFunc(this._wallets);
+					if (callback) callback();
+					return;
+				}
 			);
 		}
 	},
@@ -70,8 +74,7 @@ export const god = {
 
 	spliceWallet: function (index, callback) {
 		this._wallets.splice(index, 1);
-
-		chrome.storage.local.set({ wallets: JSON.stringify(this._wallets) }).then(() => {
+		this.setItemInLocalStorage(globalUtils.constants.WALLETS, this._wallets, () => {
 			return callback(this._wallets);
 		});
 	},
@@ -108,24 +111,20 @@ export const god = {
 	},
 
 	_getWalletsFromStorage: function () {
-		// const result = window.localStorage.getItem(globalUtils.constants.WALLETS);
-		// if (result) {
-		// 	try {
-		// 		return JSON.parse(result);
-		// 	} catch (error) {
-		// 		console.error(error);
-		// 		return [];
-		// 	}
-		// } else {
-		// 	return [];
-		// }
+		this.getItemFromLocalStorage(globalUtils.constants.WALLETS, result => {
+			console.debug("读取local存储 wallets =", result);
 
-		chrome.storage.local.get(["wallets"]).then(result => {
 			if (result && this._gettingWalletsFunc) {
-				this._wallets = JSON.parse(result.wallets);
+				try {
+					this._wallets = JSON.parse(result);
+				} catch (error) {
+					console.error(error);
+					this._wallets = result;
+				}
+
 				this._gettingWalletsFunc(this._wallets);
 			}
-		});
+		})
 	},
 
 	getItemFromLocalStorage: function (key, callback) {

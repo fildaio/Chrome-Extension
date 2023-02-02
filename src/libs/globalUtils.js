@@ -15,7 +15,9 @@ export const globalUtils = {
 		PROVIDER_INJECTED: "providerInjected",
 		ORIGIN_PROVIDER: "originProvider",
 		WEB_2_EXTENSION: "web2Extension",
-		WALLET_WEBSITE_TAB: "walletWebsiteTab"
+		WALLET_WEBSITE_TAB: "walletWebsiteTab",
+		NAME: "Name",
+		MULTISIG_WALLET_ADDRESS: "Multisig Wallet Address"
 	},
 	currency: {
 		decimals: 18,

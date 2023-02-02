@@ -192,6 +192,27 @@ button {
 	text-transform: uppercase;
 }
 
+.walletListInput {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	column-gap: 0.5em;
+	padding: 1em;
+	background-color: rgba(255, 255, 255, 0.1);
+	border-radius: 1em;
+	width: calc(100% - 2em);
+}
+
+.walletListInput input {
+	background-color: transparent;
+	font-family: rubik;
+	color: gainsboro;
+	font-size: 0.8em;
+	border: none;
+	outline: none;
+	border-bottom: 1px solid gainsboro;
+}
+
 .walletListItem {
 	display: flex;
 	flex-direction: column;
@@ -200,6 +221,7 @@ button {
 	background-color: rgba(255, 255, 255, 0.1);
 	border-radius: 1em;
 	width: calc(100% - 2em);
+	margin-bottom: 1em;
 }
 
 .walletListItem .name {

@@ -6,6 +6,8 @@ import { WalletList } from "./WalletList";
 import { web3Controller } from "../libs/web3Controller";
 import BigNumber from "bignumber.js";
 import { Tabs } from "../components/Tabs";
+import { safeController } from "../libs/safeController";
+import { walletsListUpdater } from "../libs/walletsListUpdater";
 
 export const PopupView = ({ }) => {
 	const [wallets, setWallets] = useState([]);
@@ -16,7 +18,9 @@ export const PopupView = ({ }) => {
 	const [isOriginProviderSelected, setIsOriginProviderSelected] = useState(true);
 
 	const getWallets = wallets => {
+		console.debug("更新popupView的wallets", wallets);
 		setWallets(wallets);
+		walletsListUpdater.update(wallets);
 	};
 
 	useEffect(() => {
@@ -29,6 +33,7 @@ export const PopupView = ({ }) => {
 
 		web3Controller.initWithRpc(globalUtils.web3.rpc, web3Bundle => {
 			setWeb3(web3Bundle.web3);
+			safeController.init(web3Bundle.web3);
 		});
 
 		god.getItemFromLocalStorage(globalUtils.constants.CURRENT_TAB_URL, res => {
@@ -50,8 +55,12 @@ export const PopupView = ({ }) => {
 		});
 	}, [web3, currentWallet]);
 
+	const handleImport = walletObj => {
+		console.debug("准备添加钱包", walletObj);
+		god.pushWallet(walletObj.name, walletObj.address, null);
+	};
+
 	const handleOpenCreateView = () => {
-		// god.openAddView();
 		god.syncFromWalletWebsite();
 	};
 
@@ -68,15 +77,16 @@ export const PopupView = ({ }) => {
 		const idx = parseInt(event.currentTarget.id);
 		god.spliceWallet(idx, newWallets => {
 			setWallets(newWallets);
+			walletsListUpdater.update(newWallets);
 		});
 	};
 
 	const openWalletListModal = () => {
 		god.openModal(<WalletList
-			wallets={wallets}
+			walletsGiven={wallets}
 			handleConnect={handleConnect}
 			handleDelete={handleDelete}
-			handleAdd={handleOpenCreateView}
+			handleAdd={handleImport}
 			handleSync={handleOpenCreateView} />);
 	};
 
