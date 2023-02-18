@@ -1,3 +1,4 @@
+import md5 from "blueimp-md5";
 import React from "react";
 // import ReactDOM from "react-dom";
 import { globalUtils } from "./libs/globalUtils";
@@ -6,25 +7,35 @@ import { globalUtils } from "./libs/globalUtils";
 const tagInjected = document.getElementById(globalUtils.constants.WALLET_WEBSITE_TAB);
 const extensionId = tagInjected.dataset.extensionId;
 
+let previousDataMD5 = null;
+let loadDataTimer = null;
+
+const loadLocalStorage = () => {
+	const newData = window.localStorage.getItem("wallets");
+	const newDataMD5 = md5(newData);
+	if (previousDataMD5 != newDataMD5) {
+		previousDataMD5 = newDataMD5;
+		return newData;
+	} else {
+		return null;
+	}
+}
+
 const main = () => {
-	// const div = document.createElement("div");
-	// div.style = "width: 100vw; height: 100vh; position: absolute; left: 0; top: 0; background-color: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center;"
-	// document.body.appendChild(div);
+	if (loadDataTimer) {
+		clearInterval(loadDataTimer);
+		loadDataTimer = null;
+	}
 
-	// const closeModal = () => {
-	// 	ReactDOM.unmountComponentAtNode(div);
-	// 	document.body.removeChild(div);
-	// };
-
-	// const theView = <AddView onClose={closeModal} />
-
-	// ReactDOM.render(theView, div);
-
-	const wallets = window.localStorage.getItem("wallets");
-	chrome.runtime.sendMessage(extensionId, {
-		message: globalUtils.messages.SEND_DATA_FROM_WALLET_WEBSITE,
-		data: wallets
-	});
+	loadDataTimer = setInterval(() => {
+		const wallets = loadLocalStorage();
+		if (wallets) {
+			chrome.runtime.sendMessage(extensionId, {
+				message: globalUtils.messages.SEND_DATA_FROM_WALLET_WEBSITE,
+				data: wallets
+			});
+		}
+	}, 10000);
 };
 
 main();
