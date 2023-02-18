@@ -43,10 +43,6 @@ chrome.runtime.onMessageExternal.addListener(
 chrome.runtime.onConnectExternal.addListener(function (port) {
 	thePort = port;
 	console.debug("建立连接，并注册连接", thePort);
-
-	// thePort.onMessage.addListener(function (msg) {
-	// 	console.debug("听到有人叫门", msg);
-	// });
 });
 
 chrome.runtime.onMessage.addListener(
@@ -76,6 +72,8 @@ chrome.tabs.onActivated.addListener(async activeInfo => {
 				target: { tabId: activeInfo.tabId },
 				func: () => {
 					chrome.storage.local.get(["currentWallet"]).then(async result => {
+						console.debug("准备开始注入0");
+
 						if (result) {
 							const addr = JSON.parse(result.currentWallet).address;
 							const fromTab = (await chrome.storage.local.get(["tabId"])).tabId;
@@ -106,6 +104,10 @@ chrome.tabs.onActivated.addListener(async activeInfo => {
 });
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+	if (tab.url.indexOf("chrome://extensions") === 0 || tab.url.indexOf("chrome://newtab/") === 0) {
+		return;
+	}
+
 	console.debug("onUpdated事件 tab =", tab, changeInfo);
 
 	await chrome.storage.local.set({ tabId: tabId })
@@ -116,6 +118,8 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 			func: () => {
 				chrome.storage.local.get(["currentWallet"]).then(async result => {
 					if (result) {
+						console.debug("准备开始注入1");
+
 						const fromTab = (await chrome.storage.local.get(["tabId"])).tabId;
 						const addr = JSON.parse(result.currentWallet).address;
 
