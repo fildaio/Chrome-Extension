@@ -20,7 +20,7 @@ const inject = () => {
 		const newProvider = safeProvider.init(originEthereum);
 		newProvider.safeAddress = walletAddress;
 		window.ethereum = newProvider;
-		window.alert("注入成功！");
+		// window.alert("注入成功！");
 	}
 };
 
@@ -78,8 +78,10 @@ const listen = () => {
 			console.debug("接收到了：当前网站使用多签provider吗？", event.data.useMultisigProvider);
 
 			if (event.data.useMultisigProvider) {
-				if (window.confirm("Would you like to connect the multi-sig wallet built-in the browser extension? After that, you might have to re-connect the wallets(Metamask, and so on) in the dapp.")) {
-					inject();
+				if (event.data.prompt) {
+					if (window.confirm("Would you like to connect the multi-sig wallet built-in the browser extension? After that, you might have to re-connect the wallets(Metamask, and so on) in the dapp.")) inject();
+				} else {
+					inject()
 				}
 			}
 		}
@@ -87,7 +89,8 @@ const listen = () => {
 
 	window.postMessage({
 		message: globalUtils.messages.READY_FOR_LISTENING,
-		url: window.location.origin
+		url: window.location.origin,
+		tab: fromTab
 	});
 };
 

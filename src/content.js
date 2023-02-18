@@ -34,15 +34,26 @@ window.addEventListener("message", event => {
 	if (event.data.message === globalUtils.messages.READY_FOR_LISTENING) {
 		console.debug("接收到来自网页的window消息", event);
 
-		god.setItemInLocalStorage(globalUtils.constants.CURRENT_TAB_URL, event.data.url);
+		const fromTab = event.data.tab;
+		const requestUrl = event.data.url;
+		const storeKey = globalUtils.constants.TAB_CONNECTED + "@" + fromTab;
+
+		god.setItemInLocalStorage(globalUtils.constants.CURRENT_TAB_URL, requestUrl);
 
 		god.getItemFromLocalStorage(globalUtils.constants.PROVIDER_SELECTED, providers => {
-			console.debug("读取了已存储的记录", providers, providers[event.data.url]);
+			console.debug("读取了已存储的记录", providers, providers[requestUrl]);
 
-			window.postMessage({
-				message: globalUtils.messages.CHECK_PROVIDER_OPTIONS,
-				useMultisigProvider: providers[event.data.url]
-			}, event.origin);
+			god.getItemFromLocalStorage(storeKey, tabStored => {
+				console.debug("读取了已存储的fromTab", fromTab, tabStored, fromTab != tabStored);
+
+				window.postMessage({
+					message: globalUtils.messages.CHECK_PROVIDER_OPTIONS,
+					useMultisigProvider: providers[requestUrl],
+					prompt: fromTab != tabStored
+				}, event.origin);
+
+				god.setItemInLocalStorage(storeKey, fromTab);
+			});
 		});
 	}
 });

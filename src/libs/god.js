@@ -129,8 +129,10 @@ export const god = {
 
 	getItemFromLocalStorage: function (key, callback) {
 		chrome.storage.local.get([key]).then(result => {
-			if (result) {
+			if (result && result[key]) {
 				return callback(JSON.parse(result[key]));
+			} else {
+				return callback("");
 			}
 		});
 	},

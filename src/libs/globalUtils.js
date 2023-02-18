@@ -17,7 +17,8 @@ export const globalUtils = {
 		WEB_2_EXTENSION: "web2Extension",
 		WALLET_WEBSITE_TAB: "walletWebsiteTab",
 		NAME: "Name",
-		MULTISIG_WALLET_ADDRESS: "Multisig Wallet Address"
+		MULTISIG_WALLET_ADDRESS: "Multisig Wallet Address",
+		TAB_CONNECTED: "tabConnected"
 	},
 	currency: {
 		decimals: 18,
