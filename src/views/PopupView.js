@@ -10,6 +10,7 @@ import { safeController } from "../libs/safeController";
 import { walletsListUpdater } from "../libs/walletsListUpdater";
 
 export const PopupView = ({ }) => {
+	const extensionId = chrome.runtime.id;
 	const [wallets, setWallets] = useState([]);
 	const [currentWallet, setCurrentWallet] = useState(null);
 	const [balance, setBalance] = useState(new BigNumber(0));
@@ -21,6 +22,18 @@ export const PopupView = ({ }) => {
 		console.debug("更新popupView的wallets", wallets);
 		setWallets(wallets);
 		walletsListUpdater.update(wallets);
+	};
+
+	const checkCurrentTab = async () => {
+		const tab = await god.getCurrentTab();
+		const url = (new URL(tab.url)).origin;
+		if (url.indexOf("chrome://extensions") < 0 && url.indexOf("chrome://newtab") < 0) {
+			setCurrentTabUrl(url.replace("http://", "").replace("https://", ""));
+
+			god.getItemFromLocalStorage(globalUtils.constants.PROVIDER_SELECTED, providers => {
+				setIsOriginProviderSelected(!providers[url]);
+			});
+		}
 	};
 
 	useEffect(() => {
@@ -36,13 +49,7 @@ export const PopupView = ({ }) => {
 			safeController.init(web3Bundle.web3);
 		});
 
-		god.getItemFromLocalStorage(globalUtils.constants.CURRENT_TAB_URL, res => {
-			setCurrentTabUrl(res.replace("http://", "").replace("https://", ""));
-
-			god.getItemFromLocalStorage(globalUtils.constants.PROVIDER_SELECTED, providers => {
-				setIsOriginProviderSelected(!providers[res]);
-			});
-		});
+		checkCurrentTab();
 	}, []);
 
 	useEffect(() => {
@@ -113,7 +120,13 @@ export const PopupView = ({ }) => {
 		</div>
 
 		{currentTabUrl && <div className="connectStatusBar">
-			<div>{currentTabUrl + " " + god.getLocaleString("connected")}&nbsp;</div>
+			<div>
+				<img
+					src={"chrome-extension://" + extensionId + "/images/link-solid.svg"}
+					width="16px" />
+
+				<span>&nbsp;{currentTabUrl}</span>
+			</div>
 
 			<select className="options" onChange={handleChangeProvider}>
 				<option

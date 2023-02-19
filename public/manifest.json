@@ -12,7 +12,8 @@
 				"styles/for_dapp.css",
 				"fonts/Rubik-Regular.ttf",
 				"fonts/DaysOne-Regular.ttf",
-				"images/metamask.png"
+				"images/metamask.png",
+				"images/link-solid.svg"
 			],
 			"matches": [
 				"https://*/*",

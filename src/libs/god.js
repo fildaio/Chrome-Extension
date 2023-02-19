@@ -27,7 +27,7 @@ export const god = {
 	},
 
 	syncFromWalletWebsite: function () {
-		// const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+		// const tab = await this.getCurrentTab();
 		// await chrome.tabs.sendMessage(tab.id, { message: globalUtils.constants.SHOW_ADD_VIEW });
 		chrome.tabs.create({
 			active: false,
@@ -79,9 +79,13 @@ export const god = {
 		});
 	},
 
-	connectCurrentWallet: async function (walletObj) {
+	getCurrentTab: async function () {
 		const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+		return tab;
+	},
 
+	connectCurrentWallet: async function (walletObj) {
+		const tab = await this.getCurrentTab();
 		if (tab.url.indexOf(config.walletWebSite.root) < 0) {
 			chrome.tabs.sendMessage(tab.id, {
 				message: globalUtils.messages.CONNECT_MULTISIG_WALLET,
