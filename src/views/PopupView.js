@@ -9,6 +9,8 @@ import { Tabs } from "../components/Tabs";
 import { safeController } from "../libs/safeController";
 import { walletsListUpdater } from "../libs/walletsListUpdater";
 
+let currentTabUrlOrigin = "";
+
 export const PopupView = ({ }) => {
 	const extensionId = chrome.runtime.id;
 	const [wallets, setWallets] = useState([]);
@@ -26,12 +28,13 @@ export const PopupView = ({ }) => {
 
 	const checkCurrentTab = async () => {
 		const tab = await god.getCurrentTab();
-		const url = (new URL(tab.url)).origin;
-		if (url.indexOf("chrome://extensions") < 0 && url.indexOf("chrome://newtab") < 0) {
-			setCurrentTabUrl(url.replace("http://", "").replace("https://", ""));
+		currentTabUrlOrigin = (new URL(tab.url)).origin;
+
+		if (currentTabUrlOrigin.indexOf("chrome://extensions") < 0 && currentTabUrlOrigin.indexOf("chrome://newtab") < 0) {
+			setCurrentTabUrl(currentTabUrlOrigin.replace("http://", "").replace("https://", ""));
 
 			god.getItemFromLocalStorage(globalUtils.constants.PROVIDER_SELECTED, providers => {
-				setIsOriginProviderSelected(!providers[url]);
+				setIsOriginProviderSelected(!providers[currentTabUrlOrigin]);
 			});
 		}
 	};
@@ -98,9 +101,20 @@ export const PopupView = ({ }) => {
 	};
 
 	const handleChangeProvider = event => {
+		const isMultiSigProvider = event.target.value === globalUtils.constants.PROVIDER_INJECTED;
+
 		chrome.runtime.sendMessage(null, {
 			message: globalUtils.messages.SELECT_MULTISIG_PROVIDER,
-			data: event.target.value === globalUtils.constants.PROVIDER_INJECTED
+			data: {
+				isMultiSigProvider,
+				url: currentTabUrlOrigin
+			}
+		});
+
+		const toSave = {};
+		toSave[currentTabUrlOrigin] = isMultiSigProvider;
+		god.setItemInLocalStorage(globalUtils.constants.PROVIDER_SELECTED, toSave, success => {
+			setIsOriginProviderSelected(!isMultiSigProvider);
 		});
 	};
 

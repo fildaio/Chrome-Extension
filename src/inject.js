@@ -24,55 +24,22 @@ const inject = () => {
 	}
 };
 
-// const reload = () => {
-// 	window.location.reload();
-// };
-
-// const checkProvider = () => {
-// 	chrome.runtime.sendMessage(extensionId, {
-// 		message: globalUtils.messages.CHECK_PROVIDER_OPTIONS,
-// 		data: { url: window.location.origin }
-// 	}, null, response => {
-// 		console.debug("checkProvider的回调", response);
-
-// 		if (response) {
-// 			if (window.confirm("是否确定在本网站上使用多签钱包插件进行交易？\n\n可能需要您在dapp上重新连接Metamask。")) {
-// 				inject();
-// 			}
-// 		} else {
-// 			if (window.confirm("是否想要在本网站上使用多签钱包插件进行交易？")) {
-// 				chrome.runtime.sendMessage(extensionId, {
-// 					message: globalUtils.messages.SAVE_LOCAL_STORAGE,
-// 					data: {
-// 						url: window.location.origin,
-// 						value: true
-// 					}
-// 				}, null, res => {
-// 					if (res) {
-// 						inject();
-// 					}
-// 				});
-// 			}
-// 		}
-// 	});
-// };
+const reload = () => {
+	window.location.reload();
+};
 
 const listen = () => {
 	// const port = window.chrome.runtime.connect(extensionId);
-	// port.onMessage.addListener(function (msg) {
-	// 	if (msg.message === globalUtils.messages.SELECT_MULTISIG_PROVIDER) {
-	// 		if (msg.data) {
-	// 			checkProvider();
-	// 		} else {
-	// 			reload();
-	// 		}
-	// 	}
-	// });
+	// port.onMessage.addListener(function (msg) { });
 
 	window.addEventListener("message", event => {
-		// if (event.data.message === globalUtils.messages.SELECT_MULTISIG_PROVIDER) {
-		// 	// checkProvider();
-		// }
+		if (event.data.message === globalUtils.messages.SELECT_MULTISIG_PROVIDER) {
+			if (event.data.isMultiSigProvider) {
+				inject();
+			} else {
+				reload();
+			}
+		}
 
 		if (event.data.message === globalUtils.messages.CHECK_PROVIDER_OPTIONS) {
 			console.debug("接收到了：当前网站使用多签provider吗？", event.data.useMultisigProvider);
@@ -95,11 +62,6 @@ const listen = () => {
 };
 
 const main = _ => {
-	// if (window.ethereum) {
-	// 	listen();
-	// } else {
-	// 	console.warn("没有window.ethereum");
-	// }
 	listen();
 };
 

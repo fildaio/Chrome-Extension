@@ -2,7 +2,8 @@ import { config } from "./libs/config";
 import { globalUtils } from "./libs/globalUtils";
 import { god } from "./libs/god";
 
-let thePort = null;
+// let thePort = null;
+let theLatestTab = 0;
 
 chrome.runtime.onMessageExternal.addListener(
 	function (request, sender, sendResponse) {
@@ -28,31 +29,24 @@ chrome.runtime.onMessageExternal.addListener(
 			god.pushWallets(Object.values(JSON.parse(request.data)));
 		}
 
-		if (request.message === globalUtils.messages.SAVE_LOCAL_STORAGE) {
-			const toSave = {};
-			toSave[request.data.url] = request.data.value;
-			god.setItemInLocalStorage(globalUtils.constants.PROVIDER_SELECTED, toSave, success => {
-				sendResponse(success);
-			});
-		}
-
 		return true;
 	}
 );
 
-chrome.runtime.onConnectExternal.addListener(function (port) {
-	thePort = port;
-	console.debug("建立连接，并注册连接", thePort);
-});
+// chrome.runtime.onConnectExternal.addListener(function (port) {
+// 	thePort = port;
+// });
 
 chrome.runtime.onMessage.addListener(
 	function (request, sender, sendResponse) {
-		// if (request.message === globalUtils.messages.SELECT_MULTISIG_PROVIDER && thePort) {
 		if (request.message === globalUtils.messages.SELECT_MULTISIG_PROVIDER) {
-			// thePort.postMessage({
-			// 	message: globalUtils.messages.SELECT_MULTISIG_PROVIDER,
-			// 	data: request.data
-			// });
+			chrome.tabs.sendMessage(
+				theLatestTab,
+				{
+					message: globalUtils.messages.SELECT_MULTISIG_PROVIDER,
+					data: request.data
+				}
+			);
 		}
 	}
 );
@@ -60,16 +54,18 @@ chrome.runtime.onMessage.addListener(
 chrome.tabs.onActivated.addListener(async activeInfo => {
 	console.debug("onActivated事件 activeInfo =", activeInfo);
 
-	await chrome.storage.local.set({ tabId: activeInfo.tabId })
+	theLatestTab = activeInfo.tabId;
 
-	chrome.tabs.get(activeInfo.tabId, tab => {
+	await chrome.storage.local.set({ tabId: theLatestTab })
+
+	chrome.tabs.get(theLatestTab, tab => {
 		console.debug("onActivated事件 检测tab =", tab);
 
 		if (tab && tab.url.indexOf(config.walletWebSite.root) < 0 && tab.pendingUrl?.indexOf(config.walletWebSite.root) < 0) {
 			console.debug("onActivated事件 准备注入");
 
 			chrome.scripting.executeScript({
-				target: { tabId: activeInfo.tabId },
+				target: { tabId: theLatestTab },
 				func: () => {
 					chrome.storage.local.get(["currentWallet"]).then(async result => {
 						console.debug("准备开始注入0");

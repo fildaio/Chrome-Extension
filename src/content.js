@@ -27,6 +27,13 @@ chrome.runtime.onMessage.addListener(
 			el.src = chrome.runtime.getURL("scripts/inject.js");
 			return document.head.appendChild(el);
 		}
+
+		if (request.message === globalUtils.messages.SELECT_MULTISIG_PROVIDER) {
+			window.postMessage({
+				message: globalUtils.messages.SELECT_MULTISIG_PROVIDER,
+				data: request.data
+			}, request.data.url);
+		}
 	}
 );
 
@@ -41,11 +48,7 @@ window.addEventListener("message", event => {
 		god.setItemInLocalStorage(globalUtils.constants.CURRENT_TAB_URL, requestUrl);
 
 		god.getItemFromLocalStorage(globalUtils.constants.PROVIDER_SELECTED, providers => {
-			console.debug("读取了已存储的记录", providers, providers[requestUrl]);
-
 			god.getItemFromLocalStorage(storeKey, tabStored => {
-				console.debug("读取了已存储的fromTab", fromTab, tabStored, fromTab != tabStored);
-
 				window.postMessage({
 					message: globalUtils.messages.CHECK_PROVIDER_OPTIONS,
 					useMultisigProvider: providers[requestUrl],
