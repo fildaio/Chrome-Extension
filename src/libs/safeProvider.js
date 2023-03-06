@@ -90,6 +90,10 @@ export const safeProvider = {
 		return this._originProvider.on(eventKey, handler);
 	},
 
+	connect: function () {
+		return this.request({ method: "eth_requestAccounts" });
+	},
+
 	_getGasLimit: async function () {
 		if (this._gasLimit === "0x0" && this._originWeb3) {
 			const block = await this._originWeb3.eth.getBlock("latest", false);

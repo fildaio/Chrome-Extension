@@ -156,12 +156,3 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 		});
 	}
 });
-
-// const main = () => {
-// 	setTimeout(() => {
-// 		console.log("chrome:", chrome);
-// 		console.log("chrome.action:", chrome.action);
-// 	}, 3000);
-// };
-
-// main();

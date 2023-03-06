@@ -33,5 +33,6 @@
 	"connected": "connected",
 	"multisigProvider": "Multi-signature provider",
 	"originProvider": "origin provider",
-	"syncWithWebsite": "sync with wallet.filda.org"
+	"syncWithWebsite": "sync with wallet.filda.org",
+	"deposit": "deposit"
 }

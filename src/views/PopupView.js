@@ -19,6 +19,8 @@ export const PopupView = ({ }) => {
 	const [web3, setWeb3] = useState(null);
 	const [currentTabUrl, setCurrentTabUrl] = useState("");
 	const [isOriginProviderSelected, setIsOriginProviderSelected] = useState(true);
+	const [indexOfTab, setIndexOfTab] = useState(0);
+	const [transactions, setTransactions] = useState([]);
 
 	const getWallets = wallets => {
 		console.debug("更新popupView的wallets", wallets);
@@ -118,6 +120,21 @@ export const PopupView = ({ }) => {
 		});
 	};
 
+	const handleDeposit = event => {
+		// 
+	};
+
+	const handleSwitchTab = indexOfItem => {
+		setIndexOfTab(indexOfItem);
+
+		if (indexOfItem === 1) {
+			safeController.getTransactions(currentWallet.address, async res => {
+				const transactionsArray = await safeController.getPagingTransactions(currentWallet.address, res);
+				setTransactions(transactionsArray);
+			});
+		}
+	};
+
 	return <div>
 		<div className="titleBar">
 			<img src="/images/logo32.png" />
@@ -184,17 +201,24 @@ export const PopupView = ({ }) => {
 				</div>
 
 				<div className="actions">
-					<button className="smallButton">
-						{god.getLocaleString("send")}
+					<button
+						className="smallButton"
+						onClick={handleDeposit}>
+						{god.getLocaleString("deposit")}
 					</button>
 				</div>
 			</div>
 
 			<Tabs
 				name="accountTabs"
-				options={globalUtils.accountTabs} />
+				options={globalUtils.accountTabs}
+				onSwitchTab={handleSwitchTab} />
 
-			<div className="tabContent"></div>
+			<div className="tabContent">
+				{indexOfTab === 1 && <div>
+					asdfasd
+				</div>}
+			</div>
 		</div>}
 	</div>
 }

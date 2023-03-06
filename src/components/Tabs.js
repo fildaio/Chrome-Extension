@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { god } from "../libs/god";
 
 export const Tabs = ({
 	name = "tabs",
-	options = []
+	options = [],
+	onSwitchTab = () => { }
 }) => {
+	const [indexOfItemSelected, setIndexOfItemSelected] = useState(0);
+
+	const handleSwitchTab = event => {
+		const idx = parseInt(event.target.value);
+		setIndexOfItemSelected(idx);
+		onSwitchTab(idx);
+	};
+
 	return <div className="tabs">
 		{options.map(option => {
 			return <div
@@ -13,7 +22,9 @@ export const Tabs = ({
 				<input
 					type="radio"
 					name={name}
-					id={option.id} />
+					id={option.id}
+					value={option.value}
+					onChange={handleSwitchTab} />
 
 				<label for={option.id}>
 					{god.getLocaleString(option.label)}
