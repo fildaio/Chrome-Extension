@@ -305,4 +305,38 @@ button {
 	width: 100%;
 	border-top: 1px solid #25b4ff;
 	margin: 7px -1em;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	height: 195px;
+}
+
+.fetchingTransactions {
+	width: 100%;
+	padding: 1em;
+	text-align: center;
+}
+
+.transactionItem {
+	padding: 1em;
+	border-bottom: 1px dotted lightgray;
+}
+
+.transactionItem .transactionListItem {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	justify-content: space-between;
+}
+
+.transactionItem .transactionListItem .value {
+	font-size: large;
+}
+
+.transactionItem .transactionListItem .executedIcon {
+	font-size: larger;
+}
+
+.transactionItem .transactionListItem_description {
+	font-size: smaller;
+	color: gainsboro;
 }

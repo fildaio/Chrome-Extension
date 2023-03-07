@@ -21,6 +21,7 @@ export const PopupView = ({ }) => {
 	const [isOriginProviderSelected, setIsOriginProviderSelected] = useState(true);
 	const [indexOfTab, setIndexOfTab] = useState(0);
 	const [transactions, setTransactions] = useState([]);
+	const [fetchingTxs, setFetchingTxs] = useState(false);
 
 	const getWallets = wallets => {
 		console.debug("更新popupView的wallets", wallets);
@@ -50,6 +51,8 @@ export const PopupView = ({ }) => {
 		});
 
 		web3Controller.initWithRpc(globalUtils.web3.rpc, web3Bundle => {
+			console.debug("web3Bundle =", web3Bundle);
+
 			setWeb3(web3Bundle.web3);
 			safeController.init(web3Bundle.web3);
 		});
@@ -126,12 +129,36 @@ export const PopupView = ({ }) => {
 
 	const handleSwitchTab = indexOfItem => {
 		setIndexOfTab(indexOfItem);
+		setFetchingTxs(true);
 
 		if (indexOfItem === 1) {
 			safeController.getTransactions(currentWallet.address, async res => {
-				const transactionsArray = await safeController.getPagingTransactions(currentWallet.address, res);
+				const transactionsArray = await safeController.getPagingTransactions(currentWallet.address);
 				setTransactions(transactionsArray);
+				setFetchingTxs(false);
 			});
+		}
+	};
+
+	const handleExecute = event => {
+		// 
+	};
+
+	const handleScrollBlock = async event => {
+		if (fetchingTxs) {
+			return;
+		}
+
+		const container = event.target;
+		const content = document.getElementById("scrollBlock");
+
+		if ((parseInt(container.scrollTop) + parseInt(container.clientHeight)) > (parseInt(content.clientHeight) - 50) && !fetchingTxs) {
+			setFetchingTxs(true);
+			const transactionsArray = await safeController.getPagingTransactions(currentWallet.address);
+			setTransactions(transactionsArray);
+			container.scrollTop = container.scrollTop - container.clientHeight;
+
+			setFetchingTxs(false);
 		}
 	};
 
@@ -214,9 +241,38 @@ export const PopupView = ({ }) => {
 				options={globalUtils.accountTabs}
 				onSwitchTab={handleSwitchTab} />
 
-			<div className="tabContent">
-				{indexOfTab === 1 && <div>
-					asdfasd
+			<div
+				className="tabContent"
+				onScroll={handleScrollBlock}>
+				{indexOfTab === 1 && <div id="scrollBlock">
+					{transactions.map(transaction => {
+						return <div
+							key={transaction.id}
+							className="transactionItem">
+							<div className="transactionListItem">
+								<div className="value">
+									{globalUtils.formatBigNumber(BigNumber(transaction.value), globalUtils.currency.decimals, globalUtils.currency.fraction, true)}&nbsp;{globalUtils.currency.symbol}
+								</div>
+
+								{transaction.executed && <div className="executedIcon">☑︎</div>}
+
+								{!transaction.executed && <button
+									id={transaction.id}
+									className="smallButton"
+									onClick={handleExecute}>
+									{god.getLocaleString("execute")}
+								</button>}
+							</div>
+
+							<div className="transactionListItem_description">
+								{globalUtils.stringShorten(transaction.destination, 5, 4)}&nbsp;-&nbsp;{transaction.data.substr(0, 10)}
+							</div>
+						</div>
+					})}
+
+					{fetchingTxs && <div className="fetchingTransactions">
+						<img src="/images/loading.gif" height="32px" />
+					</div>}
 				</div>}
 			</div>
 		</div>}

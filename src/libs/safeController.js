@@ -55,13 +55,16 @@ export const safeController = {
 			}
 
 			if (callback && result) {
-				this._transactions = new Array(result);
-				return callback(result);
+				const howMany = parseInt(result);
+				this._transactions = new Array(howMany);
+				this._indexOfPaging = 0;
+				return callback(howMany);
 			}
 		});
 	},
 
-	getPagingTransactions: async function (safe, count) {
+	getPagingTransactions: async function (safe) {
+		const count = this._transactions.length;
 		const from = count - this._indexOfPaging * this._pagingCount - 1;
 		let i = 0;
 
@@ -69,20 +72,24 @@ export const safeController = {
 			const theIdx = from - i;
 			i++;
 
-			const result = await this.getTransactionById(safe, theIdx);
-			if (result) {
-				this._transactions[theIdx] = result;
+			if (theIdx >= 0) {
+				const result = await this.getTransactionById(safe, theIdx);
+				if (result) {
+					this._transactions[theIdx] = result;
+				}
 			}
 		} while (i < this._pagingCount);
 
 		this._indexOfPaging++;
 
-		return this._transactions;
+		return this._transactions.reverse();
 	},
 
 	getTransactionById: async function (safe, transactionId) {
 		try {
-			return await this._getContract(safe).methods.transactions(transactionId).call();
+			const res = await this._getContract(safe).methods.transactions(transactionId).call();
+			res.id = transactionId;
+			return res;
 		} catch (error) {
 			console.error(error);
 		}
