@@ -133,15 +133,19 @@ export const PopupView = ({ }) => {
 
 		if (indexOfItem === 1) {
 			safeController.getTransactions(currentWallet.address, async res => {
-				const transactionsArray = await safeController.getPagingTransactions(currentWallet.address);
-				setTransactions(transactionsArray);
+				await safeController.getPagingTransactions(currentWallet.address);
+				setTransactions(safeController.fetchTxs(currentWallet.address));
 				setFetchingTxs(false);
 			});
 		}
+
+		if (indexOfItem === 0) {
+			// safeController.getTokens(currentWallet.address)
+		}
 	};
 
-	const handleExecute = event => {
-		// 
+	const handleExecute = () => {
+		god.openMultisigWalletWebPage(currentWallet.address);
 	};
 
 	const handleScrollBlock = async event => {
@@ -154,8 +158,8 @@ export const PopupView = ({ }) => {
 
 		if ((parseInt(container.scrollTop) + parseInt(container.clientHeight)) > (parseInt(content.clientHeight) - 50) && !fetchingTxs) {
 			setFetchingTxs(true);
-			const transactionsArray = await safeController.getPagingTransactions(currentWallet.address);
-			setTransactions(transactionsArray);
+			await safeController.getPagingTransactions(currentWallet.address);
+			setTransactions(safeController.fetchTxs(currentWallet.address));
 			container.scrollTop = container.scrollTop - container.clientHeight;
 
 			setFetchingTxs(false);
@@ -265,7 +269,7 @@ export const PopupView = ({ }) => {
 							</div>
 
 							<div className="transactionListItem_description">
-								{globalUtils.stringShorten(transaction.destination, 5, 4)}&nbsp;-&nbsp;{transaction.data.substr(0, 10)}
+								{globalUtils.stringShorten(transaction.destination, 5, 4)}&nbsp;-&nbsp;{transaction.data?.substr(0, 10)}
 							</div>
 						</div>
 					})}
@@ -273,6 +277,10 @@ export const PopupView = ({ }) => {
 					{fetchingTxs && <div className="fetchingTransactions">
 						<img src="/images/loading.gif" height="32px" />
 					</div>}
+				</div>}
+
+				{indexOfTab === 0 && <div id="scrollBlock">
+					dasfdsf
 				</div>}
 			</div>
 		</div>}

@@ -18,7 +18,9 @@ export const globalUtils = {
 		WALLET_WEBSITE_TAB: "walletWebsiteTab",
 		NAME: "Name",
 		MULTISIG_WALLET_ADDRESS: "Multisig Wallet Address",
-		TAB_CONNECTED: "tabConnected"
+		TAB_CONNECTED: "tabConnected",
+		MULTISIG_TRANSACTIONS: "multisigTransactions",
+		INDEX_OF_PAGING: "indexOfPaging"
 	},
 	currency: {
 		decimals: 18,

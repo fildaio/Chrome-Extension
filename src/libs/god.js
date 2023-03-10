@@ -35,6 +35,13 @@ export const god = {
 		});
 	},
 
+	openMultisigWalletWebPage: function (address) {
+		chrome.tabs.create({
+			active: false,
+			url: config.walletWebSite.root + config.walletWebSite.wallets + address
+		});
+	},
+
 	openModal: function (modal) {
 		ReactDOM.render(modal, document.getElementById("modalContainer"));
 	},
@@ -136,7 +143,19 @@ export const god = {
 			if (result && result[key]) {
 				return callback(JSON.parse(result[key]));
 			} else {
-				return callback("");
+				return callback(null);
+			}
+		});
+	},
+
+	asyncGetItemFromLocalStorage: async function (key, dataBox) {
+		chrome.storage.local.get([key]).then(result => {
+			console.debug("asyncGetItemFromLocalStorage()", key, result);
+
+			if (result && result[key]) {
+				return dataBox.result = JSON.parse(result[key]);
+			} else {
+				return dataBox.result = null;
 			}
 		});
 	},

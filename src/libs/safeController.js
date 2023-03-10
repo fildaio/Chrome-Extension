@@ -1,4 +1,6 @@
 import multiSigWalletWithDailyLimit from "../assets/abis/MultiSigWalletWithDailyLimit.json"
+import { globalUtils } from "./globalUtils";
+import { god } from "./god";
 
 export const safeController = {
 	_web3: null,
@@ -6,16 +8,30 @@ export const safeController = {
 	_pagingCount: 5,
 	_indexOfPaging: 0,
 	_transactions: null,
+	_transactionCount: null,
 
 	init: function (web3) {
 		this._indexOfPaging = 0;
-		this._transactions = null;
 		this._web3 = web3;
 
 		if (this._contracts) {
 			this._contracts.clear();
+			this._contracts = null;
 		}
 		this._contracts = new Map();
+
+		if (this._transactions) {
+			this._transactions = null;
+		}
+		this.loadTransactions();
+
+		this._transactionCount = new Map();
+	},
+
+	loadTransactions: function () {
+		god.getItemFromLocalStorage(globalUtils.constants.MULTISIG_TRANSACTIONS, res => {
+			this._transactions = res || {}
+		});
 	},
 
 	isOwner: async function (safe, account, callback) {
@@ -48,6 +64,10 @@ export const safeController = {
 	// 	});
 	// }
 
+	getTokens: function (safe, callback) {
+		// 
+	},
+
 	getTransactions: function (safe, callback) {
 		this._getContract(safe).methods.getTransactionCount(true, true).call(null, (error, result) => {
 			if (error) {
@@ -56,7 +76,7 @@ export const safeController = {
 
 			if (callback && result) {
 				const howMany = parseInt(result);
-				this._transactions = new Array(howMany);
+				this._transactionCount.set(safe, howMany);
 				this._indexOfPaging = 0;
 				return callback(howMany);
 			}
@@ -64,31 +84,44 @@ export const safeController = {
 	},
 
 	getPagingTransactions: async function (safe) {
-		const count = this._transactions.length;
+		const now = (new Date()).getTime();
+		const txs = this._transactions[safe];
+		const count = this._transactionCount.get(safe);
+
+		this._indexOfPaging = Math.floor(Object.values(txs).length / this._pagingCount);
+
 		const from = count - this._indexOfPaging * this._pagingCount - 1;
+
 		let i = 0;
 
 		do {
-			const theIdx = from - i;
+			const theIdx = String(from - i);
 			i++;
 
-			if (theIdx >= 0) {
+			if (theIdx >= 0 && (!txs[theIdx] || (now - txs[theIdx]?.updateTime) > 300000)) {
 				const result = await this.getTransactionById(safe, theIdx);
 				if (result) {
-					this._transactions[theIdx] = result;
+					txs[theIdx] = result;
 				}
 			}
-		} while (i < this._pagingCount);
+		} while (i < this._pagingCount && i >= 0);
 
 		this._indexOfPaging++;
 
-		return this._transactions.reverse();
+		god.setItemInLocalStorage(globalUtils.constants.MULTISIG_TRANSACTIONS, this._transactions);
 	},
 
-	getTransactionById: async function (safe, transactionId) {
+	fetchTxs: function (safe) {
+		return Object.values(this._transactions[safe]).reverse();
+	},
+
+	getTransactionById: async function (safe, id) {
+		const transactionId = parseInt(id);
+
 		try {
 			const res = await this._getContract(safe).methods.transactions(transactionId).call();
 			res.id = transactionId;
+			res.updateTime = (new Date()).getTime();
 			return res;
 		} catch (error) {
 			console.error(error);
